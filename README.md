@@ -6,7 +6,7 @@ This is the final project of the "Java Programming" course at Peking University.
 
 In this section, we introduce the project roles and contributions of our team members.
 
-Zhile Feng
+Zhiyue Feng
 Design and implement the start screen and level selection interface.
 Use a database to create a leaderboard for scores.
 Prepare PowerPoint presentation and project video.
