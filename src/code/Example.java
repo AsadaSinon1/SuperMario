@@ -1,7 +1,7 @@
 package src.code;
 
-public class example{
+public class Example {
     public static void main(String[] args) {
-        System.out.println("SuperMario");
+        System.out.println("commit from IDEA");
     }
 }
