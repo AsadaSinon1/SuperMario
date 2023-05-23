@@ -9,7 +9,7 @@ public class Mario extends JFrame implements Runnable{
     //走路速度、起跳速度、重力加速度
     final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003;
     //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、蹬墙容错度
-    final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40,MAP_NUM = 3,delay = 50;
+    final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40,MAP_NUM = 3,delay = 100;
     //人物x,y坐标、水平速度、垂直速度
     double x,y,vx,vy;
     //左方向是否按下、右方向是否按下、是否离地、跳跃键是否按下、是否死亡
@@ -228,7 +228,7 @@ public class Mario extends JFrame implements Runnable{
             if(wallLeft)timeLeft = curTime;
             if(wallRight)timeRight = curTime;
             boolean onWall = (wallLeft&&left)||(wallRight&&right);
-            double rate = onWall?0.3:1.0;
+            double rate = onWall?0.1:1.0;
             if(vy>0)vy-=dt*g*(jump?0.5:3.0)*(onWall?1.5:1.0);
             else vy-=dt*g*rate;
             if(vy<-jumpSpeed*rate)vy = -jumpSpeed*rate;
