@@ -8,7 +8,7 @@ public class Mario extends JFrame implements Runnable{
     Thread thread = new Thread(this);
     //走路速度、起跳速度、重力加速度
     final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003;
-    //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、蹬墙容错度
+    //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、边缘容错度
     final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40,MAP_NUM = 3,delay = 50;
     //人物x,y坐标、水平速度、垂直速度
     double x,y,vx,vy;
@@ -92,7 +92,7 @@ public class Mario extends JFrame implements Runnable{
                 if (code==KeyEvent.VK_A){
                     if(vx==0)vx = -walkSpeed;
                     left = true;
-                    if(jump&&curTime<timeJump+delay&&curTime<timeLeft+delay&&!wallRightJump&&!wallLeftJump){
+                    if(jump&&curTime<timeJump+delay&&curTime<timeRight+delay&&!wallRightJump&&!wallLeftJump){
                         vy = jumpSpeed*0.8;
                         vx = -walkSpeed;
                         wallLeftJump = true;
@@ -101,15 +101,13 @@ public class Mario extends JFrame implements Runnable{
                 if (code==KeyEvent.VK_D){
                     if(vx==0)vx = walkSpeed;
                     right = true;
-                    if(jump&&curTime<timeJump+delay&&curTime<timeLeft+delay
-                      &&!wallRightJump&&!wallLeftJump){
+                    if(jump&&curTime<timeJump+delay&&curTime<timeLeft+delay&&!wallRightJump&&!wallLeftJump){
                         vy = jumpSpeed*0.8;
                         vx = walkSpeed;
                         wallRightJump = true;
                     }
                 }
                 if (code==KeyEvent.VK_SPACE){
-                    timeJump = curTime;
                     if((!jump&&!fall)||(fall&&curTime<timeOnGround+delay))vy = jumpSpeed;
                     if(right&&curTime<timeLeft+delay&&!jump&&!wallRightJump&&!wallLeftJump){
                         vy = jumpSpeed*0.8;
@@ -122,6 +120,7 @@ public class Mario extends JFrame implements Runnable{
                         wallLeftJump = true;
                     }
                     fall = jump = true;
+                    timeJump = curTime;
                 }
             }
             public void keyReleased(KeyEvent e) {
@@ -239,7 +238,7 @@ public class Mario extends JFrame implements Runnable{
     public void run(){
         long curTime = 0,prevTime = new Date().getTime();
         while(true){
-            mySleep(15);
+            mySleep(20);
             curTime = new Date().getTime();
             update(curTime-prevTime,curTime);
             repaint();
