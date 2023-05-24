@@ -29,7 +29,7 @@ Find and create various artistic textures and graphics.
 We have achieved a fair distribution of work, and each member has contributed to this project.
 
 
-# updates 
+# Updates 
 
 In this section, we introduce the important updates.
 
