@@ -54,8 +54,9 @@ public class Mario extends JFrame implements Runnable{
     public void paint(Graphics g) {
         g.setColor(Color.GRAY);
         g.fillRect(0, 0, WIDTH, HEIGHT);
-        g.setColor(Color.WHITE);
-        g.fillRect(pixelate(x),pixelate(y),width,height);
+        //g.setColor(Color.WHITE);
+        //g.fillRect(pixelate(x), pixelate(y), width, height);
+        g.drawImage( Toolkit.getDefaultToolkit().getImage("src/image/marioRunLeft1.png"), pixelate(x), pixelate(y), width, height,null);
         g.setColor(Color.BLACK);
         g.fillRect(0,595,800,40);
         g.fillRect(400,200,400,400);
