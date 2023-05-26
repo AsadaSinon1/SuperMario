@@ -37,21 +37,21 @@ public class GameStartFrame extends JFrame {
         panel1 = new JPanel();
         panel1.setBounds(0,0,800,640);
         panel1.setBackground(Color.BLACK);
-        //getContentPane().add(panel1);
+        getContentPane().add(panel1);
         panel1.setLayout(null);
 
         ImageIcon icon0 = new ImageIcon("src/image/Logo1.jpg");
         label0 = new JLabel(icon0);
-        label0.setBounds(100,50,600,250);
+        label0.setBounds(80,50,600,200);
         label0.setVisible(true);
         panel1.add(label0);
+
 
         ImageIcon icon1 = new ImageIcon("src/image/marioRunRight2.png");
         label1 = new JLabel(icon1);
         label1.setBounds(170,320,50,100);
-        //label1.setVisible(true);
+        label1.setVisible(false);
         panel1.add(label1);
-        getContentPane().add(panel1);
 
         ImageIcon icon2 = new ImageIcon("src/image/marioRunRight3.png");
         label2 = new JLabel(icon2);
@@ -74,7 +74,8 @@ public class GameStartFrame extends JFrame {
         star2.setVisible(false);
         panel1.add(star1);
         panel1.add(star2);
-        label0.setVisible(true);
+
+
         label1.setVisible(true);
         try {
             Thread.sleep(800);
@@ -95,14 +96,13 @@ public class GameStartFrame extends JFrame {
         label2.setVisible(false);
         star2.setVisible(true);
         label3.setVisible(true);
-    
 
         try {
             Thread.sleep(800);
         }catch (Exception e){
             e.printStackTrace();
         }
-     }
+    }
     void showEnterFrame(){
         panel2 = new GameEnterPanel();
         setContentPane(panel2);
