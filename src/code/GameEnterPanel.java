@@ -12,16 +12,17 @@ public class GameEnterPanel extends JPanel {
         this.setBounds(0,0,800,640);
         this.setLayout(null);
 
-        ImageIcon icon_bg = new ImageIcon("src/image/MarioForUI.jpg");
+        ImageIcon icon_bg = new ImageIcon("src/image/UIsuperMario.png");
+        icon_bg.setImage(icon_bg.getImage().getScaledInstance(800, 640, ABORT));//调整大小
         background = new JLabel(icon_bg);
-        background.setBounds(0, 50, 800, 500);
+        background.setBounds(0, 0, 800, 640);
         this.add(background);
 
         button_start = new JButton("开始游戏");
-        button_start.setBounds(130,280,90,30);
+        button_start.setBounds(200,320,90,30);
 
         button_end = new JButton("退出游戏");
-        button_end.setBounds(130,330,90,30);
+        button_end.setBounds(200,360,90,30);
         button_end.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);//退出程序
