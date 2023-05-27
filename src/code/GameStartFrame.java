@@ -110,9 +110,10 @@ public class GameStartFrame extends JFrame {
         panel2.addAction(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        panel3 = new LevelChosenPanel();
-                        setContentPane(panel3);
-                        validate();
+                        dispose();
+                        LoginFrame loginFrame = new LoginFrame();
+                        loginFrame.showPanel1();
+                        loginFrame.setVisible(true);
                     }
                 });
     }
@@ -122,4 +123,3 @@ public class GameStartFrame extends JFrame {
         frame.Loading();
         frame.showEnterFrame();
     }
-}
