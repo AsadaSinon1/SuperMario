@@ -123,3 +123,4 @@ public class GameStartFrame extends JFrame {
         frame.Loading();
         frame.showEnterFrame();
     }
+}
