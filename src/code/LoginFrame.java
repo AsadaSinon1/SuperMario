@@ -172,24 +172,11 @@ public class LoginFrame extends JFrame {
             label4.addMouseListener(
                     new MouseListener() {
                         public void mouseClicked(MouseEvent arg0) {
-                            //在save.txt中查找用户名，看是否存在；存在，进入选关界面；不存在，弹窗
+                            //在save中查找用户名命名的文件，看是否存在；存在，进入选关界面；不存在，弹窗
                             //告知用户输入的用户名不正确
                             boolean found = false;
-                            try {
-                                String inputText = textField1.getText();
-                                File file = new File("src/save/ranking.txt");
-                                BufferedReader br = new BufferedReader(new FileReader(file));
-                                String line;
-                                while ((line = br.readLine()) != null) {
-                                    if (line.equals(inputText)) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                br.close();
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
+                            String inputText = textField1.getText();
+                            found = FileOperation.searchFile(inputText);
                             if(found){
                                 dispose();
                                 GameStartFrame frame = new GameStartFrame();
@@ -304,43 +291,19 @@ public class LoginFrame extends JFrame {
                         public void mouseClicked(MouseEvent arg0) {
                             //在save.txt中查找该用户名是否存在，若存在，提醒用户改用户名已被使用
                             //不存在，创建用户名存入save.txt
-                            boolean found = false;
-                            try {
-                                String inputText = textField1.getText();
-                                File file = new File("src/save/ranking.txt");
-                                BufferedReader br = new BufferedReader(new FileReader(file));
-                                String line;
-                                while ((line = br.readLine()) != null) {
-                                    if (line.equals(inputText)) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                br.close();
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                            if(found){
+                            String inputText = textField1.getText();
+                            boolean created = FileOperation.insertFile(inputText);
+                            if(created){
                                 SwingUtilities.invokeLater(new Runnable() {
                                     public void run() {
-                                        new MessageFrame(2);
+                                        new MessageFrame(3);
                                     }
                                 });
                             }
                             else{
-                                //将该用户名写入save文件中
-                                String inputText = textField1.getText();
-                                try {
-                                    FileWriter writer = new FileWriter("src/save/ranking.txt", true);
-                                    writer.write(System.lineSeparator() + inputText);
-                                    writer.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                textField1.setText("");
                                 SwingUtilities.invokeLater(new Runnable() {
                                     public void run() {
-                                        new MessageFrame(3);
+                                        new MessageFrame(2);
                                     }
                                 });
                             }
@@ -390,5 +353,36 @@ public class LoginFrame extends JFrame {
         panel3 = new LogPanel3();
         setContentPane(panel3);
         validate();
+    }
+}
+class FileOperation {
+    public static boolean searchFile(String userName) {
+        // 要查找的目录和文件名
+        File directory = new File("src/save");
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if(userName.equals(file.getName())){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean insertFile(String fileName) {
+        boolean success = false;
+        //目录下存在已该用户名命名的文件，该用户无法创建
+        String directoryPath = "src/save";
+        File file = new File(directoryPath + "/" + fileName);
+        if (!file.exists()) {  // 检查文件是否已经存在
+            try {
+                file.createNewFile();  // 创建文件
+                success = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return success;
     }
 }
