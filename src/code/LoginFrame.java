@@ -289,11 +289,12 @@ public class LoginFrame extends JFrame {
             label4.addMouseListener(
                     new MouseListener() {
                         public void mouseClicked(MouseEvent arg0) {
-                            //在save.txt中查找该用户名是否存在，若存在，提醒用户改用户名已被使用
-                            //不存在，创建用户名存入save.txt
+                            //在save中查找该以该用户名命名的文件夹是否存在，若存在，提醒用户改用户名已被使用
+                            //不存在，创建用户名存入save
                             String inputText = textField1.getText();
                             boolean created = FileOperation.insertFile(inputText);
                             if(created){
+                                textField1.setText("");
                                 SwingUtilities.invokeLater(new Runnable() {
                                     public void run() {
                                         new MessageFrame(3);
@@ -358,31 +359,27 @@ public class LoginFrame extends JFrame {
 class FileOperation {
     public static boolean searchFile(String userName) {
         // 要查找的目录和文件名
-        File directory = new File("src/save");
-        File[] files = directory.listFiles();
-        if (files != null) {
+        boolean found = false;
+        File folder = new File("src/save"); // 目标文件夹的路径
+        if (folder.exists() && folder.isDirectory()) {
+            // 文件夹存在，遍历目录，查找是否有同名文件夹
+            File[] files = folder.listFiles();
             for (File file : files) {
-                if(userName.equals(file.getName())){
-                    return true;
+                if (file.isDirectory() && file.getName().equals(userName)) {
+                    found = true;
                 }
             }
         }
-        return false;
+        return found;
     }
 
     public static boolean insertFile(String fileName) {
-        boolean success = false;
         //目录下存在已该用户名命名的文件，该用户无法创建
-        String directoryPath = "src/save";
-        File file = new File(directoryPath + "/" + fileName);
-        if (!file.exists()) {  // 检查文件是否已经存在
-            try {
-                file.createNewFile();  // 创建文件
-                success = true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return success;
+        File filedir = new File("src/save/"+fileName);
+        if(searchFile(fileName))return false;
+        filedir.mkdir();
+        //在数据库中创建用户信息
+        SQLConnection.Update(fileName,0,true);
+        return true;
     }
 }
