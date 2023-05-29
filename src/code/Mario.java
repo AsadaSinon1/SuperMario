@@ -9,7 +9,7 @@ public class Mario extends JFrame implements Runnable{
     //走路速度、起跳速度、重力加速度
     final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003;
     //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、边缘容错度
-    final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40,MAP_NUM = 3,delay = 50;
+    static final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40,MAP_NUM = 3,delay = 50;
     //人物x,y坐标、水平速度、垂直速度
     double x,y,vx,vy;
     //左方向是否按下、右方向是否按下、是否离地、跳跃键是否按下、是否死亡
@@ -17,8 +17,8 @@ public class Mario extends JFrame implements Runnable{
     //左侧是否有墙、右侧是否有墙、是否触发左蹬墙跳、是否触发右蹬墙跳
     boolean wallLeft,wallRight,wallLeftJump,wallRightJump;
     //分数、当前地图编号、地图（0为空气，1为墙，2为金币，3为死亡）
-    int grade,mapId;
-    int[][][] map = new int[MAP_NUM][WIDTH/pixel+10][HEIGHT/pixel+10];
+    static int grade,mapId;
+    static int[][][] map = new int[MAP_NUM][WIDTH/pixel+10][HEIGHT/pixel+10];
     //金币
     ArrayList<Coin> coins = new ArrayList<>();
     //上一次粘在左（右）墙的时刻（用来调整蹬墙容错）、上一次跳跃的时刻、上一次在地面的时刻
@@ -69,7 +69,9 @@ public class Mario extends JFrame implements Runnable{
             }
         }
         g.setColor(Color.RED);
-        if(mapId==1)g.fillRect(200,550,5,5);
+        if (mapId == 1)
+            g.fillRect(200, 550, 5, 5);
+        //test 
     }
 
     static public void main(String[] args) {
@@ -89,7 +91,7 @@ public class Mario extends JFrame implements Runnable{
             public void keyPressed(KeyEvent e) {
                 if(death)return;
                 int code = e.getKeyCode();
-                long curTime = new Date().getTime();
+                long curTime = System.currentTimeMillis();
                 if (code==KeyEvent.VK_A){
                     if(vx==0)vx = -walkSpeed;
                     left = true;
@@ -159,7 +161,7 @@ public class Mario extends JFrame implements Runnable{
     }
 
     //像素化坐标
-    int pixelate(double x){
+    static int pixelate(double x){
         int t = (int)(x/pixel)*pixel;
         if(2*(x-t)>pixel)return t+pixel;
         return t;
@@ -237,10 +239,10 @@ public class Mario extends JFrame implements Runnable{
 
     @Override
     public void run(){
-        long curTime = 0,prevTime = new Date().getTime();
+        long curTime = 0,prevTime =System.currentTimeMillis();
         while(true){
             mySleep(20);
-            curTime = new Date().getTime();
+            curTime = System.currentTimeMillis();
             update(curTime-prevTime,curTime);
             repaint();
             prevTime = curTime;
