@@ -8,13 +8,13 @@ public class SQLConnection {
         String driver = "com.mysql.cj.jdbc.Driver";
 
         // URL指向要访问的数据库名
-        String url = "jdbc:mysql://127.0.0.1:3306/mysql";
+        String url = "jdbc:mysql://127.0.0.1:3306/db_for_mario";
 
         // MySQL的用户名
         String user = "root";
 
         // MySQL的密码
-        String password = "";
+        String password = "mysqlroot";
         int score = 0;
         try {
             // 加载驱动程序
@@ -30,7 +30,7 @@ public class SQLConnection {
             Statement statement = conn.createStatement();
 
             // 要执行的SQL语句
-            String sql = "SELECT score FROM users WHERE name = '"+ userName + "'";
+            String sql = "SELECT score FROM mario_users WHERE name = '"+ userName + "'";
 
             // 执行语句，得到结果集
             ResultSet rs = statement.executeQuery(sql);
@@ -56,10 +56,10 @@ public class SQLConnection {
     }
     public static void Update(String userName,int newScore,boolean choice){
         String driver = "com.mysql.cj.jdbc.Driver";
-        String url = "jdbc:mysql://127.0.0.1:3306/mysql";
+        String url = "jdbc:mysql://127.0.0.1:3306/db_for_mario";
 
         String user = "root";
-        String password = "";
+        String password = "mysqlroot";
         try{
             Class.forName(driver);
 
@@ -72,9 +72,9 @@ public class SQLConnection {
             Statement statement = conn.createStatement();
 
             // 要执行的SQL语句
-            String sql1 = "INSERT INTO users (name,score)" + "VALUES ('"+ userName +"',0)";
+            String sql1 = "INSERT INTO mario_users (name,score)" + "VALUES ('"+ userName +"',0)";
 
-            String sql2 = "UPDATE users SET score = "+ newScore +" WHERE name = '"+ userName + "'";
+            String sql2 = "UPDATE mario_users SET score = "+ newScore +" WHERE name = '"+ userName + "'";
 
             //true插入新的用户数据
             if(choice){
@@ -96,13 +96,5 @@ public class SQLConnection {
         } catch(Exception e) {
             e.printStackTrace();
         }
-    }
-    public static void main(String[] args){
-        //查找Kate的得分值
-        int score = Search("Kate");
-        System.out.println(score);
-        //插入新用户Tom
-        //Update("Tom",0,true);
-        Update("Tom",450,false);
     }
 }
