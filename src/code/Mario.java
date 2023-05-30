@@ -8,13 +8,14 @@ public class Mario{
     //走路速度、起跳速度、重力加速度
     final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003;
     //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、边缘容错度
-    static final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40,MAP_NUM = 3,delay = 100;
+    static final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40;
+    static final int MAP_NUM = 3,delay = 100,dashDelay = 250;
     //人物x,y坐标、水平速度、垂直速度
     double x,y,vx,vy;
     //上一帧方向（-1，1），上一帧跑步状态（1，2，3，4）
     int lastDirection, lastState;
     //左方向是否按下、右方向是否按下、是否离地、跳跃键是否按下、是否死亡
-    boolean left,right,fall,jump,death;
+    boolean left,right,fall,jump,death,faceRight,dashAble,dash;
     //左侧是否有墙、右侧是否有墙、是否触发左蹬墙跳、是否触发右蹬墙跳
     boolean wallLeft,wallRight,wallLeftJump,wallRightJump;
     //分数、当前地图编号、地图（0为空气，1为墙，2为金币，3为死亡）
@@ -23,7 +24,7 @@ public class Mario{
     //金币
     ArrayList<Coin> coins = new ArrayList<>();
     //上一次粘在左（右）墙的时刻（用来调整蹬墙容错）、上一次跳跃的时刻、上一次在地面的时刻
-    long timeLeft,timeRight,timeJump,timeOnGround;
+    long timeLeft,timeRight,timeJump,timeOnGround,timeDash;
 
     //设计地图函数，可修改
     void initMap(int [][][]map){
@@ -93,9 +94,8 @@ public class Mario{
     void respawn(int op){
         mapId+=op;
         x = 0;y = 0;vy = 0;
-        fall = true;
-        death = false;
-        left = right = jump = false;
+        fall = faceRight = dashAble = true;
+        death = dash = left = right = jump = false;
         wallLeft = wallRight = false;
         wallLeftJump = wallRightJump = false;
         lastDirection = 1;
@@ -126,7 +126,7 @@ public class Mario{
     }
     //更新每一帧所有状态（尽量不要修改）
     void update(double dt,long curTime){
-        double newx = x+dt*vx,newy = y-dt*vy,t = 0;
+        double newx = x+dt*vx,newy = dash?y:y-dt*vy,t = 0;
         //碰撞检测+调节
         if(check(newx,newy,1)){
             for(t = 0;t<=dt;t+=0.1,x+=0.1*vx)if(check(x,y,1))break;
@@ -171,12 +171,35 @@ public class Mario{
             for(int i = 0;i<height/pixel;i++)if(map[mapId][px+width/pixel][py+i]==1)wallRight = true;
             if(wallLeft)timeLeft = curTime;
             if(wallRight)timeRight = curTime;
+            if(wallLeft||wallRight){
+                if(dash)vx = 0;
+                dash = false;
+            }
             boolean onWall = (wallLeft&&left)||(wallRight&&right);
             double rate = onWall?0.3:1.0;
             if(vy>0)vy-=dt*g*(jump?0.5:3.0)*(onWall?1.5:1.0);
             else vy-=dt*g*rate;
             if(vy<-jumpSpeed*rate)vy = -jumpSpeed*rate;
-        }else timeOnGround = curTime;
+        }else{
+            timeOnGround = curTime;
+            dashAble = true;
+        }
+        if(dash){
+            long deltaTime = curTime-timeDash;
+            if(deltaTime<dashDelay){
+                vx = (faceRight?1:-1)*walkSpeed*(1+2*Math.sin(deltaTime*Math.PI/dashDelay));
+            }else{
+                dash = false;
+                if(left&&right)vx = (faceRight?1:-1)*walkSpeed;
+                else if(left){
+                    vx = -walkSpeed;
+                    faceRight = false;
+                }else if(right){
+                    vx = walkSpeed;
+                    faceRight = true;
+                }else vx = 0;
+            }
+        }
     }
 
 

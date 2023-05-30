@@ -43,7 +43,7 @@ public class Backstage extends JFrame implements Runnable {
         }
         for(int k = 0;k<2;k++){
             for(int i = 80;i<102;i++)
-                for(int j = 50;j<117;j++)
+                for(int j = 48;j<117;j++)
                     mario.map[k][i][j] = 1;
         }
 
@@ -60,8 +60,10 @@ public class Backstage extends JFrame implements Runnable {
                 int code = e.getKeyCode();
                 long curTime = System.currentTimeMillis();
                 if (code==KeyEvent.VK_A){
-                    if(mario.vx==0)mario.vx = -mario.walkSpeed;
                     mario.left = true;
+                    if(mario.dash)return;
+                    if(mario.vx==0)mario.vx = -mario.walkSpeed;
+                    if(!mario.right)mario.faceRight = false;
                     if(mario.jump&&curTime<mario.timeJump+mario.delay&&curTime<mario.timeRight+mario.delay&&!mario.wallRightJump&&!mario.wallLeftJump){
                         mario.vy = mario.jumpSpeed*0.8;
                         mario.vx = -mario.walkSpeed;
@@ -69,8 +71,10 @@ public class Backstage extends JFrame implements Runnable {
                     }
                 }
                 if (code==KeyEvent.VK_D){
-                    if(mario.vx==0)mario.vx = mario.walkSpeed;
                     mario.right = true;
+                    if(mario.dash)return;
+                    if(mario.vx==0)mario.vx = mario.walkSpeed;
+                    if(!mario.left)mario.faceRight = true;
                     if(mario.jump&&curTime<mario.timeJump+mario.delay&&curTime<mario.timeLeft+mario.delay&&!mario.wallRightJump&&!mario.wallLeftJump){
                         mario.vy = mario.jumpSpeed*0.8;
                         mario.vx = mario.walkSpeed;
@@ -78,6 +82,7 @@ public class Backstage extends JFrame implements Runnable {
                     }
                 }
                 if (code==KeyEvent.VK_SPACE){
+                    if(mario.dash)return;
                     if((!mario.jump&&!mario.fall)||(mario.fall&&curTime<mario.timeOnGround+mario.delay))mario.vy = mario.jumpSpeed;
                     if(mario.right&&curTime<mario.timeLeft+mario.delay&&!mario.jump&&!mario.wallRightJump&&!mario.wallLeftJump){
                         mario.vy = mario.jumpSpeed*0.8;
@@ -92,16 +97,26 @@ public class Backstage extends JFrame implements Runnable {
                     mario.fall = mario.jump = true;
                     mario.timeJump = curTime;
                 }
+                if(code==KeyEvent.VK_L){
+                    if(!mario.dashAble)return;
+                    mario.dash = true;
+                    mario.dashAble = false;
+                    mario.timeDash = curTime;
+                }
             }
             public void keyReleased(KeyEvent e) {
                 if(mario.death)return;
                 if (e.getKeyCode() == KeyEvent.VK_A){
                     mario.left = false;
+                    if(mario.dash)return;
                     mario.vx = mario.right?mario.walkSpeed:0;
+                    if(mario.right)mario.faceRight = true;
                 }
                 if (e.getKeyCode() == KeyEvent.VK_D){
                     mario.right = false;
+                    if(mario.dash)return;
                     mario.vx = mario.left?-mario.walkSpeed:0;
+                    if(mario.left)mario.faceRight = false;
                 }
                 if (e.getKeyCode() == KeyEvent.VK_SPACE){
                     mario.jump = false;
@@ -121,7 +136,7 @@ public class Backstage extends JFrame implements Runnable {
         long curTime = 0,prevTime =System.currentTimeMillis();
         int interval=0;
         while(true){
-            mySleep(20);
+            mySleep(10);
             curTime = System.currentTimeMillis();
             mario.update(curTime-prevTime,curTime);
             if(interval==0) repaint();
