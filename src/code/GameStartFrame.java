@@ -77,6 +77,7 @@ public class GameStartFrame extends JFrame {
 
 
         label1.setVisible(true);
+        panel1.repaint();
         try {
             Thread.sleep(800);
         }catch (Exception e){
