@@ -1,9 +1,6 @@
 package src.code;
 
 import java.awt.*;
-import java.io.IOException;
-import java.sql.Date;
-
 
 public class Enemy {
     int width, height;//怪物的宽度和高度，目前只支持矩形怪物
@@ -18,7 +15,7 @@ public class Enemy {
     final double G = 0.003;//重力加速度
     long walkingTimer=0;//走路计时器
     Image[] img;//怪物的所有贴图
-    Image defaultImg = Toolkit.getDefaultToolkit().getImage("src/image/num4.png");//待改 完全透明图像 
+    Image defaultImg = Toolkit.getDefaultToolkit().getImage("src/image/totalAlpha.png");//待改 完全透明图像 
     /**
      * @param x x坐标
      * @param y y坐标
@@ -85,8 +82,10 @@ public class Enemy {
         if (positionY + height > Mario.HEIGHT)
             positionY = Mario.HEIGHT - height;
     }
+    
     /**
      * 是不是实体(墙、水管等是实体、金币;其他怪物不算实体、mario也不算，单独处理)
+     * 注意这里的pixel x是实际坐标/pixel
      * @return 
      */
     boolean isEntity(int pixelx,int pixely) throws Exception
@@ -108,42 +107,44 @@ public class Enemy {
     boolean checkBounce(Edge edge)
     {        
         positionCorrection();
-        int pixelX = Mario.pixelate(positionX);//借用一下算像素的函数
-        int pixelY = Mario.pixelate(positionY);
+        int pixelX = Mario.pixelate(positionX)/Mario.pixel;//借用一下算像素的函数
+        int pixelY = Mario.pixelate(positionY) / Mario.pixel;
+        int pixelH = height / Mario.pixel;
+        int pixelW = width / Mario.pixel;
         int pixelXEnd=-1, pixelYEnd=-1, pixelXStart=-1, pixelYStart=-1;//检测范围
         int edgeLen = 1;//边缘的宽度    
-        switch(edge)
+        switch(edge)//尽量不要改这里的代码
         {
             case UPPER:
-                if(positionY==0)
+                if(pixelX==0)
                     return true;
-                pixelXEnd = pixelX + width / Mario.pixel;
-                pixelYEnd = pixelY + edgeLen;
+                pixelXEnd = pixelX + pixelW;
+                pixelYEnd = pixelY - edgeLen;
                 pixelXStart = pixelX;
                 pixelYStart = pixelY;
                 break;
             case LOWER:
-                if(positionY==Mario.HEIGHT-height)
+                if(pixelY>=Mario.HEIGHT/Mario.pixel-pixelH)
                     return true;
-                pixelXEnd = pixelX + width / Mario.pixel;
-                pixelYEnd = pixelY + height;
+                pixelXEnd = pixelX + pixelW;
+                pixelYEnd = pixelY + pixelH+edgeLen;
                 pixelXStart = pixelX;
-                pixelYStart = pixelY + height/ Mario.pixel - edgeLen;
+                pixelYStart = pixelY + pixelH;
                 break;
             case LEFT:
-                if(positionX==0)
+                if(pixelX==0)
                     return true;
-                pixelXEnd = pixelX + edgeLen;
-                pixelYEnd = pixelY + height / Mario.pixel;
-                pixelXStart = pixelX;
+                pixelXEnd = pixelX ;
+                pixelYEnd = pixelY + pixelH;
+                pixelXStart = pixelX-edgeLen;
                 pixelYStart = pixelY;
                 break;
             case RIGHT:
-                if(positionX==Mario.WIDTH-width)
+                if(pixelX>=Mario.WIDTH/Mario.pixel-pixelW)
                     return true;
-                pixelXEnd = pixelX + width / Mario.pixel-edgeLen;
-                pixelYEnd = pixelY + height / Mario.pixel;
-                pixelXStart = pixelX+ width / Mario.pixel;
+                pixelXEnd = pixelX + pixelW+edgeLen;
+                pixelYEnd = pixelY + pixelH;
+                pixelXStart = pixelX+ pixelW;
                 pixelYStart = pixelY;
                 break;           
             default:
@@ -182,8 +183,8 @@ class Mushroom extends Enemy {
     final int MUSHROOM_VALUE = 1000;//蘑菇的价值分数
     final int REMAIN_TIME = 2000;//蘑菇的尸体保留时间
     final int STEP_TIME = 500;//走一步需要的时间，即贴图切换时间
-    final int MUSHROOM_HEIGHT = 50;
-    final int MUSHROOM_WIDTH = 50;
+    final int MUSHROOM_HEIGHT = 30;
+    final int MUSHROOM_WIDTH = 30;
     Mushroom(double x,double y,int mapId)
     {
         super(x, y, mapId);
@@ -193,9 +194,9 @@ class Mushroom extends Enemy {
         height = MUSHROOM_HEIGHT;
         width = MUSHROOM_WIDTH;
         img = new Image[3];
-        img[0] = Toolkit.getDefaultToolkit().getImage("src/image/num1.png");//待改 左脚迈步
-        img[1] = Toolkit.getDefaultToolkit().getImage("src/image/num2.png");//待改 右脚迈步
-        img[2] = Toolkit.getDefaultToolkit().getImage("src/image/num3.png");//待改 灰蘑菇
+        img[0] = Toolkit.getDefaultToolkit().getImage("src/image/mushroom0.png");//左脚迈步
+        img[1] = Toolkit.getDefaultToolkit().getImage("src/image/mushroom1.png");//右脚迈步
+        img[2] = Toolkit.getDefaultToolkit().getImage("src/image/mushroomRemain.png");//灰蘑菇
         step = 0;
     }
     @Override
@@ -231,17 +232,17 @@ class Mushroom extends Enemy {
                 speedY += G * DELTA_T;
                 isfall = true;
             }
-            if (checkBounce(Edge.UPPER))//上碰撞
+            if (speedY<0&&checkBounce(Edge.UPPER))//上碰撞
             {
                 speedY = -speedY;
             }
             positionY = positionY + DELTA_T * speedY;
 
-            if (checkBounce(Edge.LEFT) || checkBounce(Edge.RIGHT))//左右碰撞
+            if (((speedX<0)&&checkBounce(Edge.LEFT)) || ((speedX>0)&&checkBounce(Edge.RIGHT)))//左右碰撞
             {
                 speedX = -speedX;
             }
-            positionX = positionX + DELTA_T + speedX;
+            positionX = positionX + DELTA_T * speedX;
         }
 
         //更新step 

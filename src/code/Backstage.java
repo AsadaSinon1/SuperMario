@@ -5,13 +5,22 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Backstage extends JFrame implements Runnable {
     Thread thread = new Thread(this);
     Plot currPlot;
+    ArrayList<Enemy> enemyList = new ArrayList<>();
+
     Mario mario = new Mario();
-    Mushroom mushroom = new Mushroom(500,0,0);
-    Backstage(){
+    Enemy e = new Enemy(0, 0, 1);
+
+    
+    Backstage() {
+        Mushroom mushroom1 = new Mushroom(500, 0, 0);
+        Mushroom mushroom2 = new Mushroom(50, 200, 0);
+        enemyList.add(mushroom1);
+        enemyList.add(mushroom2);
         currPlot = new Plot("src/map/level1.mariomap");
         try {
             currPlot.parsePlot();
@@ -27,18 +36,24 @@ public class Backstage extends JFrame implements Runnable {
                 Image backgroundImage = currPlot.paintPlot();
                 // 绘制图像
                 g.drawImage(backgroundImage, 0, 0,
-                    currPlot.screenWidth, currPlot.screenHeight, null);
-                g.drawImage(mushroom.getCurImage(),mario.pixelate(mushroom.getPositionX()),mario.pixelate(mushroom.getPositionY()),mushroom.width,mushroom.height,null);
-                g.drawImage(Toolkit.getDefaultToolkit().getImage("src/image/mario"+mario.findDirection()+".png"), mario.pixelate(mario.x), mario.pixelate(mario.y), mario.width, mario.height,null);//        g.setColor(Color.BLACK);
+                        currPlot.screenWidth, currPlot.screenHeight, null);
+                for(Enemy enemy:enemyList)
+                g.drawImage(enemy.getCurImage(), Mario.pixelate(enemy.getPositionX()),
+                        Mario.pixelate(enemy.getPositionY()), enemy.width, enemy.height, null);
+                        
+                g.drawImage(Toolkit.getDefaultToolkit().getImage("src/image/mario"+mario.findDirection()+".png"), Mario.pixelate(mario.x), Mario.pixelate(mario.y), mario.width, mario.height,null);//        g.setColor(Color.BLACK);
             }
         });
         // mario.initMap(currPlot.info.digitalMap);
         //design the map
-        for(int k = 0;k<2;k++){
-            for(int i = 0;i<160;i++)
-                for(int j = 113;j<128;j++)
-                    mario.map[k][i][j] = 1;
+        for (int k = 0; k < 2; k++) {
+            for (int i = 0; i < 160; i++)
+                for (int j = 112; j < 128; j++)//yyt：这里应该是112 不是113？砖是40x40（8pixelx8pixel)
+                    Mario.map[k][i][j] = 1;
         }
+        for (int i = 120; i < 128; i++)
+            for (int j = 104; j < 112;j++)
+                Mario.map[0][i][j] = 1;
 //        for(int k = 0;k<2;k++){
 //            for(int i = 0;i<60;i++)
 //                for(int j = 48;j<117;j++)
@@ -141,8 +156,9 @@ public class Backstage extends JFrame implements Runnable {
         while(true){
             mySleep(20);
             curTime = System.currentTimeMillis();
-            mario.update(curTime-prevTime,curTime);
-            mushroom.update(curTime-prevTime,curTime);
+            mario.update(curTime - prevTime, curTime);
+            for(Enemy enemy:enemyList)
+                enemy.update(curTime - prevTime, curTime);          
             if(interval==0) repaint();
             interval = (interval+1)%2;
             prevTime = curTime;

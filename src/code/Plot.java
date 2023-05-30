@@ -50,10 +50,11 @@ public class Plot {
         // 绘制砖块照片
         for (int i = 0; i < 20; i++) {
             for (int j = 1; j < 3; j++) {
-                g2d.drawImage(image2, i*40-2, this.screenHeight-j*this.blockSize, 
-                this.blockSize+2, this.blockSize+4, null);// Test code by yyt. TODO: Delete this. 
+                g2d.drawImage(image2, i * 40 - 2, this.screenHeight - j * this.blockSize,
+                        this.blockSize + 2, this.blockSize + 4, null);// Test code by yyt. TODO: Delete this. 
             } // +2，+4，是为了消除间隙。此乃曲线救国也！
         }
+        g2d.drawImage(image2, 600-2, 520, blockSize + 2, blockSize + 4, null);//画一块砖，Test code by yyt.TODO: Delete this. 
         // for (int i = 0; i < 11; i++) {
         //     for (int j = 2; j < 15; j++) {
         //         g2d.drawImage(image2, i * 25-10, 548 - j * 24, null);

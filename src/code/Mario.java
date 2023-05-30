@@ -8,7 +8,8 @@ public class Mario{
     //走路速度、起跳速度、重力加速度
     final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003;
     //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、边缘容错度
-    static final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40;
+    static final int WIDTH = 800, HEIGHT = 640, pixel = 5;
+    final int width = 30,height = 40;
     static final int MAP_NUM = 3,delay = 100,dashDelay = 250;
     //人物x,y坐标、水平速度、垂直速度
     double x,y,vx,vy;
