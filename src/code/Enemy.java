@@ -38,6 +38,13 @@ public class Enemy {
     public double getPositionY() {
         return positionY;
     }
+    
+    public int getWidth() {
+        return width;
+    }
+    public int getHeight() {
+        return height;
+    }
     /**
      * @return 怪物当前状态对应的贴图
      */
