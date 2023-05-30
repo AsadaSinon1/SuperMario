@@ -4,14 +4,15 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class Mario extends JFrame implements Runnable{
-    Thread thread = new Thread(this);
+public class Mario{
     //走路速度、起跳速度、重力加速度
     final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003;
     //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、边缘容错度
     static final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40,MAP_NUM = 3,delay = 50;
     //人物x,y坐标、水平速度、垂直速度
     double x,y,vx,vy;
+    //上一帧方向（-1，1），上一帧跑步状态（1，2，3，4）
+    int lastDirection, lastState;
     //左方向是否按下、右方向是否按下、是否离地、跳跃键是否按下、是否死亡
     boolean left,right,fall,jump,death;
     //左侧是否有墙、右侧是否有墙、是否触发左蹬墙跳、是否触发右蹬墙跳
@@ -25,128 +26,72 @@ public class Mario extends JFrame implements Runnable{
     long timeLeft,timeRight,timeJump,timeOnGround;
 
     //设计地图函数，可修改
-    void initMap(){
-        //design the map
-        for(int k = 0;k<MAP_NUM;k++){
-            if(k!=1){
-                for(int i = 0;i<55;i++)
-                    for(int j = 40;j<100;j++)
-                        map[k][i][j] = 1;
-            }
-            for(int i = 0;i<160;i++)
-                for(int j = 120;j<128;j++)
-                    map[k][i][j] = 1;
-            for(int i = 80;i<160;i++)
-                for(int j = 40;j<120;j++)
-                    map[k][i][j] = 1;
-        }
-        map[1][40][110] = 3;
-        // addCoin(new Coin(0,120,70),2);
-         addCoin(new Coin(1,10,100));
-        // addCoin(new Coin(2,130,70),4);
+    void initMap(int [][][]map){
+        this.map = map;
     }
     void addCoin(Coin coin){
         map[coin.id][coin.x][coin.y] = 2;
         coins.add(coin);
     }
-    //绘制函数，可修改
-    @Override
-    public void paint(Graphics g) {
-//        g.setColor(Color.GRAY);
-//        g.fillRect(0, 0, WIDTH, HEIGHT);
-//        //g.setColor(Color.WHITE);
-//        //g.fillRect(pixelate(x), pixelate(y), width, height);
-        g.drawImage( Toolkit.getDefaultToolkit().getImage("src/image/bgMountainCloud1.png"), 0,0, WIDTH,HEIGHT,null);
-        g.drawImage( Toolkit.getDefaultToolkit().getImage("src/image/marioRunLeft1.png"), pixelate(x), pixelate(y), width, height,null);//        g.setColor(Color.BLACK);
-//        g.fillRect(0,595,800,40);
-//        g.fillRect(400,200,400,400);
-//        if(mapId!=1)g.fillRect(0,200,275,300);
-//        for(int i = 0;i<coins.size();i++){
-//            Coin c = coins.get(i);
-//            if(c.id==mapId&&map[c.id][c.x][c.y]==2){
-//                g.setColor(Color.YELLOW);
-//                g.fillRect((c.x-3)*pixel,(c.y-3)*pixel,6*pixel,6*pixel);
-//            }
+
+    public String findDirection(){
+        if(jump&&vx>0){
+            lastDirection=1;
+            lastState=1;
+            return "JumpRight";
+        }
+        if(jump&&vx<0){
+            lastDirection=-1;
+            lastState=1;
+            return "JumpLeft";
+        }
+        if(jump&&vx==0){
+            lastState=1;
+            if(lastDirection==1)return "JumpRight";
+            if(lastDirection==-1)return "JumpLeft";
+        }
+//        if(fall&&vx>0){
+//            lastDirection=1;
+//            lastState=1;
+//            return "FullRight";
 //        }
-//        g.setColor(Color.RED);
-//        if (mapId == 1)
-//            g.fillRect(200, 550, 5, 5);
-//        //test
-    }
-
-    static public void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new Mario();
-        });
-    }
-
-    public Mario() {
-        this.setSize(WIDTH, HEIGHT);
-        this.setResizable(false);
-        this.setVisible(true);
-        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        this.getContentPane().requestFocus();
-        //键盘事件
-        this.getContentPane().addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if(death)return;
-                int code = e.getKeyCode();
-                long curTime = System.currentTimeMillis();
-                if (code==KeyEvent.VK_A){
-                    if(vx==0)vx = -walkSpeed;
-                    left = true;
-                    if(jump&&curTime<timeJump+delay&&curTime<timeRight+delay&&!wallRightJump&&!wallLeftJump){
-                        vy = jumpSpeed*0.8;
-                        vx = -walkSpeed;
-                        wallLeftJump = true;
-                    }
-                }
-                if (code==KeyEvent.VK_D){
-                    if(vx==0)vx = walkSpeed;
-                    right = true;
-                    if(jump&&curTime<timeJump+delay&&curTime<timeLeft+delay&&!wallRightJump&&!wallLeftJump){
-                        vy = jumpSpeed*0.8;
-                        vx = walkSpeed;
-                        wallRightJump = true;
-                    }
-                }
-                if (code==KeyEvent.VK_SPACE){
-                    if((!jump&&!fall)||(fall&&curTime<timeOnGround+delay))vy = jumpSpeed;
-                    if(right&&curTime<timeLeft+delay&&!jump&&!wallRightJump&&!wallLeftJump){
-                        vy = jumpSpeed*0.8;
-                        vx = walkSpeed;
-                        wallRightJump = true;
-                    }
-                    if(left&&curTime<timeRight+delay&&!jump&&!wallLeftJump&&!wallRightJump){
-                        vy = jumpSpeed*0.8;
-                        vx = -walkSpeed;
-                        wallLeftJump = true;
-                    }
-                    fall = jump = true;
-                    timeJump = curTime;
-                }
-            }
-            public void keyReleased(KeyEvent e) {
-                if(death)return;
-                if (e.getKeyCode() == KeyEvent.VK_A){
-                    left = false;
-                    vx = right?walkSpeed:0;
-                }
-                if (e.getKeyCode() == KeyEvent.VK_D){
-                    right = false;
-                    vx = left?-walkSpeed:0;
-                }
-                if (e.getKeyCode() == KeyEvent.VK_SPACE){
-                    jump = false;
-                    wallLeftJump = false;
-                    wallRightJump = false;
-                }
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
-        initMap();
-        respawn(0);
+//        if(fall&&vx<0){
+//            lastDirection=-1;
+//            lastState=1;
+//            return "FullLeft";
+//        }
+//        if(fall&&vx==0){
+//            lastState=1;
+//            if(lastDirection==1)return "FullRight";
+//            if(lastDirection==-1)return "FullLeft";
+//        }
+        if(lastDirection==1&&vx>0){
+            lastState = lastState==1?2:(lastState-2+1)%3+2;
+            return "RunRight"+ lastState;
+        }
+        if(lastDirection==1&&vx==0){
+            lastState = 1;
+            return "RunRight"+ lastState;
+        }
+        if(lastDirection==1&&vx<0){
+            lastDirection = -1;
+            lastState = 2;
+            return "RunLeft"+ lastState;
+        }
+        if(lastDirection==-1&&vx>0){
+            lastState = 2;
+            lastDirection = 1;
+            return "RunRight"+ lastState;
+        }
+        if(lastDirection==-1&&vx==0){
+            lastState = 1;
+            return "RunLeft"+ lastState;
+        }
+        if(lastDirection==-1&&vx<0){
+            lastState = lastState==1?2:(lastState-2+1)%3+2;
+            return "RunLeft"+ lastState;
+        }
+        return "RunRight1";
     }
 
     //重生（op=0表示当前地图重生，op=1表示下一个地图重生），可修改
@@ -158,6 +103,8 @@ public class Mario extends JFrame implements Runnable{
         left = right = jump = false;
         wallLeft = wallRight = false;
         wallLeftJump = wallRightJump = false;
+        lastDirection = 1;
+        lastState = 1;
     }
 
     //像素化坐标
@@ -237,25 +184,7 @@ public class Mario extends JFrame implements Runnable{
         }else timeOnGround = curTime;
     }
 
-    @Override
-    public void run(){
-        long curTime = 0,prevTime =System.currentTimeMillis();
-        while(true){
-            mySleep(20);
-            curTime = System.currentTimeMillis();
-            update(curTime-prevTime,curTime);
-            repaint();
-            prevTime = curTime;
-        }
-    }
 
-    void mySleep(long millis){
-        try{
-            Thread.sleep(millis);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
 }
 
 class Coin{
