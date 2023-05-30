@@ -52,26 +52,26 @@ public class Mario extends JFrame implements Runnable{
     //绘制函数，可修改
     @Override
     public void paint(Graphics g) {
-        g.setColor(Color.GRAY);
-        g.fillRect(0, 0, WIDTH, HEIGHT);
-        //g.setColor(Color.WHITE);
-        //g.fillRect(pixelate(x), pixelate(y), width, height);
-        g.drawImage( Toolkit.getDefaultToolkit().getImage("src/image/marioRunLeft1.png"), pixelate(x), pixelate(y), width, height,null);
-        g.setColor(Color.BLACK);
-        g.fillRect(0,595,800,40);
-        g.fillRect(400,200,400,400);
-        if(mapId!=1)g.fillRect(0,200,275,300);
-        for(int i = 0;i<coins.size();i++){
-            Coin c = coins.get(i);
-            if(c.id==mapId&&map[c.id][c.x][c.y]==2){
-                g.setColor(Color.YELLOW);
-                g.fillRect((c.x-3)*pixel,(c.y-3)*pixel,6*pixel,6*pixel);
-            }
-        }
-        g.setColor(Color.RED);
-        if (mapId == 1)
-            g.fillRect(200, 550, 5, 5);
-        //test 
+//        g.setColor(Color.GRAY);
+//        g.fillRect(0, 0, WIDTH, HEIGHT);
+//        //g.setColor(Color.WHITE);
+//        //g.fillRect(pixelate(x), pixelate(y), width, height);
+        g.drawImage( Toolkit.getDefaultToolkit().getImage("src/image/bgMountainCloud1.png"), 0,0, WIDTH,HEIGHT,null);
+        g.drawImage( Toolkit.getDefaultToolkit().getImage("src/image/marioRunLeft1.png"), pixelate(x), pixelate(y), width, height,null);//        g.setColor(Color.BLACK);
+//        g.fillRect(0,595,800,40);
+//        g.fillRect(400,200,400,400);
+//        if(mapId!=1)g.fillRect(0,200,275,300);
+//        for(int i = 0;i<coins.size();i++){
+//            Coin c = coins.get(i);
+//            if(c.id==mapId&&map[c.id][c.x][c.y]==2){
+//                g.setColor(Color.YELLOW);
+//                g.fillRect((c.x-3)*pixel,(c.y-3)*pixel,6*pixel,6*pixel);
+//            }
+//        }
+//        g.setColor(Color.RED);
+//        if (mapId == 1)
+//            g.fillRect(200, 550, 5, 5);
+//        //test
     }
 
     static public void main(String[] args) {

@@ -174,7 +174,7 @@ class Mushroom extends Enemy {
        img = new Image[3];
        img[0] = Toolkit.getDefaultToolkit().getImage("src/image/num1.png");//待改 左脚迈步
        img[1] = Toolkit.getDefaultToolkit().getImage("src/image/num2.png");//待改 右脚迈步
-       img[2]=Toolkit.getDefaultToolkit().getImage("src/image/num3.png");//待改 灰蘑菇
+       img[2] = Toolkit.getDefaultToolkit().getImage("src/image/num3.png");//待改 灰蘑菇
    }
     @Override
     public Image getCurImage() {
