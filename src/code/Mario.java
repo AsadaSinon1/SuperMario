@@ -8,7 +8,7 @@ public class Mario{
     //走路速度、起跳速度、重力加速度
     final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003;
     //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、边缘容错度
-    static final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40,MAP_NUM = 3,delay = 50;
+    static final int WIDTH = 800,HEIGHT = 640,pixel = 5,width = 30,height = 40,MAP_NUM = 3,delay = 100;
     //人物x,y坐标、水平速度、垂直速度
     double x,y,vx,vy;
     //上一帧方向（-1，1），上一帧跑步状态（1，2，3，4）
@@ -35,36 +35,31 @@ public class Mario{
     }
 
     public String findDirection(){
-        if(jump&&vx>0){
+        if(fall&&wallLeft&&left){
+            lastDirection = -1;
+            lastState=1;
+            return "SlideLeft";
+        }
+        if(fall&&wallRight&&right){
+            lastDirection = 1;
+            lastState=1;
+            return "SlideRight";
+        }
+        if(fall&&jump&&vx>0){
             lastDirection=1;
             lastState=1;
             return "JumpRight";
         }
-        if(jump&&vx<0){
+        if(fall&&jump&&vx<0){
             lastDirection=-1;
             lastState=1;
             return "JumpLeft";
         }
-        if(jump&&vx==0){
+        if(fall&&jump&&vx==0){
             lastState=1;
             if(lastDirection==1)return "JumpRight";
             if(lastDirection==-1)return "JumpLeft";
         }
-//        if(fall&&vx>0){
-//            lastDirection=1;
-//            lastState=1;
-//            return "FullRight";
-//        }
-//        if(fall&&vx<0){
-//            lastDirection=-1;
-//            lastState=1;
-//            return "FullLeft";
-//        }
-//        if(fall&&vx==0){
-//            lastState=1;
-//            if(lastDirection==1)return "FullRight";
-//            if(lastDirection==-1)return "FullLeft";
-//        }
         if(lastDirection==1&&vx>0){
             lastState = lastState==1?2:(lastState-2+1)%3+2;
             return "RunRight"+ lastState;

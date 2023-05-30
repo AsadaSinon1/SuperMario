@@ -36,13 +36,21 @@ public class Backstage extends JFrame implements Runnable {
                 for(int j = 117;j<128;j++)
                     mario.map[k][i][j] = 1;
         }
-
-
+        for(int k = 0;k<2;k++){
+            for(int i = 0;i<60;i++)
+                for(int j = 48;j<117;j++)
+                    mario.map[k][i][j] = 1;
+        }
+        for(int k = 0;k<2;k++){
+            for(int i = 80;i<102;i++)
+                for(int j = 50;j<117;j++)
+                    mario.map[k][i][j] = 1;
+        }
 
         this.getContentPane().setPreferredSize(new Dimension(800,640));
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.pack();
-//        this.setResizable(false);
+        this.setResizable(false);
         this.setVisible(true);
         this.getContentPane().requestFocus();
         //键盘事件
@@ -111,11 +119,13 @@ public class Backstage extends JFrame implements Runnable {
     @Override
     public void run() {
         long curTime = 0,prevTime =System.currentTimeMillis();
+        int interval=0;
         while(true){
             mySleep(20);
             curTime = System.currentTimeMillis();
             mario.update(curTime-prevTime,curTime);
-            repaint();
+            if(interval==0) repaint();
+            interval = (interval+1)%2;
             prevTime = curTime;
         }
     }

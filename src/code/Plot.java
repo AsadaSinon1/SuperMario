@@ -40,7 +40,18 @@ public class Plot {
 
         for (int i = 0; i < 30; i++) {
             for (int j = 0; j < 2; j++) {
-                g2d.drawImage(image2, i * 25, j * 24 + 520, null);
+                g2d.drawImage(image2, i * 25-10, 544 - j * 24, null);
+            }
+        }
+        for (int i = 0; i < 11; i++) {
+            for (int j = 2; j < 15; j++) {
+                g2d.drawImage(image2, i * 25-10, 548 - j * 24, null);
+            }
+        }
+
+        for (int i = 14; i < 18; i++) {
+            for (int j = 2; j < 15; j++) {
+                g2d.drawImage(image2, i * 25, 548 - j * 24, null);
             }
         }
 
