@@ -22,10 +22,11 @@ public class Backstage extends JFrame implements Runnable {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // 加载背景图像
-                Image backgroundImage = currPlot.paintPlot().getScaledInstance(800, 640, Image.SCALE_SMOOTH);//调整大小
-
+                //Image backgroundImage = currPlot.paintPlot().getScaledInstance(800, 640, Image.SCALE_SMOOTH);//调整大小
+                Image backgroundImage = currPlot.paintPlot();
                 // 绘制图像
-                g.drawImage(backgroundImage, 0, 0, null);
+                g.drawImage(backgroundImage, 0, 0,
+                    currPlot.screenWidth, currPlot.screenHeight, null);
                 g.drawImage( Toolkit.getDefaultToolkit().getImage("src/image/mario"+mario.findDirection()+".png"), mario.pixelate(mario.x), mario.pixelate(mario.y), mario.width, mario.height,null);//        g.setColor(Color.BLACK);
             }
         });
