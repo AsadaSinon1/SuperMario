@@ -10,6 +10,7 @@ public class Backstage extends JFrame implements Runnable {
     Thread thread = new Thread(this);
     Plot currPlot;
     Mario mario = new Mario();
+    Mushroom mushroom = new Mushroom(500,0,0);
     Backstage(){
         currPlot = new Plot("src/map/level1.mariomap");
         try {
@@ -27,26 +28,27 @@ public class Backstage extends JFrame implements Runnable {
                 // 绘制图像
                 g.drawImage(backgroundImage, 0, 0,
                     currPlot.screenWidth, currPlot.screenHeight, null);
-                g.drawImage( Toolkit.getDefaultToolkit().getImage("src/image/mario"+mario.findDirection()+".png"), mario.pixelate(mario.x), mario.pixelate(mario.y), mario.width, mario.height,null);//        g.setColor(Color.BLACK);
+                g.drawImage(mushroom.getCurImage(),mario.pixelate(mushroom.getPositionX()),mario.pixelate(mushroom.getPositionY()),mushroom.width,mushroom.height,null);
+                g.drawImage(Toolkit.getDefaultToolkit().getImage("src/image/mario"+mario.findDirection()+".png"), mario.pixelate(mario.x), mario.pixelate(mario.y), mario.width, mario.height,null);//        g.setColor(Color.BLACK);
             }
         });
         // mario.initMap(currPlot.info.digitalMap);
         //design the map
         for(int k = 0;k<2;k++){
             for(int i = 0;i<160;i++)
-                for(int j = 117;j<128;j++)
+                for(int j = 113;j<128;j++)
                     mario.map[k][i][j] = 1;
         }
-        for(int k = 0;k<2;k++){
-            for(int i = 0;i<60;i++)
-                for(int j = 48;j<117;j++)
-                    mario.map[k][i][j] = 1;
-        }
-        for(int k = 0;k<2;k++){
-            for(int i = 80;i<102;i++)
-                for(int j = 48;j<117;j++)
-                    mario.map[k][i][j] = 1;
-        }
+//        for(int k = 0;k<2;k++){
+//            for(int i = 0;i<60;i++)
+//                for(int j = 48;j<117;j++)
+//                    mario.map[k][i][j] = 1;
+//        }
+//        for(int k = 0;k<2;k++){
+//            for(int i = 80;i<102;i++)
+//                for(int j = 48;j<117;j++)
+//                    mario.map[k][i][j] = 1;
+//        }
 
         this.getContentPane().setPreferredSize(new Dimension(800,640));
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -137,9 +139,10 @@ public class Backstage extends JFrame implements Runnable {
         long curTime = 0,prevTime =System.currentTimeMillis();
         int interval=0;
         while(true){
-            mySleep(10);
+            mySleep(20);
             curTime = System.currentTimeMillis();
             mario.update(curTime-prevTime,curTime);
+            mushroom.update(curTime-prevTime,curTime);
             if(interval==0) repaint();
             interval = (interval+1)%2;
             prevTime = curTime;
