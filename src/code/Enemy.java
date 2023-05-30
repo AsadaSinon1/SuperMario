@@ -12,7 +12,11 @@ public class Enemy {
     int value;//杀死怪物可以得到的分数
     double positionX, positionY, speedX, speedY;// X坐标，Y坐标，X轴速度，Y轴速度
     double deathTime = -1;//死亡时间
+    boolean isfall=false;//是否处于掉落状态
     LifeState lifeState = LifeState.ALIVE;//生命状态
+    final double DELTA_T = 0.1;//以0.1ms为单位，更新位置和速度
+    final double G = 0.003;//重力加速度
+    long walkingTimer=0;//走路计时器
     Image[] img;//怪物的所有贴图
     Image defaultImg = Toolkit.getDefaultToolkit().getImage("src/image/num4.png");//待改 完全透明图像 
     /**
@@ -26,15 +30,17 @@ public class Enemy {
         positionY = y;
         curMapId = mapId;
     }
-    /**
-     * @return 怪物当前状态对应的贴图
-     */
+   
     public double getPositionX() {
         return positionX;
     }
+
     public double getPositionY() {
         return positionY;
     }
+    /**
+     * @return 怪物当前状态对应的贴图
+     */
     Image getCurImage() {
         return defaultImg;
     }
@@ -92,7 +98,7 @@ public class Enemy {
      * @return
      * @throws Exception
      */
-    boolean checkBounce(Edge edge) throws Exception
+    boolean checkBounce(Edge edge)
     {        
         positionCorrection();
         int pixelX = Mario.pixelate(positionX);//借用一下算像素的函数
@@ -139,8 +145,10 @@ public class Enemy {
         for (int i = pixelXStart; i < pixelXEnd; i++)
             for (int j = pixelYStart; j < pixelYEnd; j++)
             {
-                if (isEntity(i, j))
-                    return true;
+                try{
+                    if(isEntity(i, j))
+                        return true;
+                }catch(Exception e){e.printStackTrace();}               
             }
         return false;
     }
@@ -163,19 +171,26 @@ enum Edge{
 
 class Mushroom extends Enemy {
     int step;//当前运动状态对应的贴图，0 or 1
-
+    final double MUSHROOM_SPEED = 0.2;//蘑菇的走路速度
+    final int MUSHROOM_VALUE = 1000;//蘑菇的价值分数
+    final int REMAIN_TIME = 2000;//蘑菇的尸体保留时间
+    final int STEP_TIME = 500;//走一步需要的时间，即贴图切换时间
+    final int MUSHROOM_HEIGHT = 50;
+    final int MUSHROOM_WIDTH = 50;
     Mushroom(double x,double y,int mapId)
     {
         super(x, y, mapId);
-        speedX = 0.2;
+        speedX = MUSHROOM_SPEED;
         speedY = 0;
+        value = MUSHROOM_VALUE;
+        height = MUSHROOM_HEIGHT;
+        width = MUSHROOM_WIDTH;
+        img = new Image[3];
+        img[0] = Toolkit.getDefaultToolkit().getImage("src/image/num1.png");//待改 左脚迈步
+        img[1] = Toolkit.getDefaultToolkit().getImage("src/image/num2.png");//待改 右脚迈步
+        img[2] = Toolkit.getDefaultToolkit().getImage("src/image/num3.png");//待改 灰蘑菇
+        step = 0;
     }
-   {
-       img = new Image[3];
-       img[0] = Toolkit.getDefaultToolkit().getImage("src/image/num1.png");//待改 左脚迈步
-       img[1] = Toolkit.getDefaultToolkit().getImage("src/image/num2.png");//待改 右脚迈步
-       img[2] = Toolkit.getDefaultToolkit().getImage("src/image/num3.png");//待改 灰蘑菇
-   }
     @Override
     public Image getCurImage() {
         if (lifeState == LifeState.DEAD)
@@ -187,16 +202,47 @@ class Mushroom extends Enemy {
     @Override
     void update(double dt, long curTime) {
         
+        //判断状态
         if (lifeState == LifeState.DEAD)
             return;
-        if(lifeState==LifeState.REMAIN&&curTime-deathTime>=1000)//尸体停留超过1s了
+        if(lifeState==LifeState.REMAIN&&curTime-deathTime>=REMAIN_TIME)//尸体停留超过2s了
         {
             lifeState = LifeState.DEAD;
             return;
         }
-        //检查碰撞地图实体
-        //修正速度：若左、右、上碰到实体，反弹，速度变为等大方向相反，若下碰到实体，Vy变为0，Vx不变
-       //待完成
 
+        //若存活
+        //检查碰撞地图实体
+        //修正速度：若左、右、上碰到实体，反弹，速度变为等大方向相反，若下碰到实体，Vy变为0，Vx不变       
+        for (double t = 0; t < dt; t += DELTA_T)
+        {
+            if (checkBounce(Edge.LOWER))//下碰撞
+            {
+                speedY = 0;
+                isfall = false;
+            } else {
+                speedY += G * DELTA_T;
+                isfall = true;
+            }
+            if (checkBounce(Edge.UPPER))//上碰撞
+            {
+                speedY = -speedY;
+            }
+            positionY = positionY + DELTA_T * speedY;
+
+            if (checkBounce(Edge.LEFT) || checkBounce(Edge.RIGHT))//左右碰撞
+            {
+                speedX = -speedX;
+            }
+            positionX = positionX + DELTA_T + speedX;
+        }
+
+        //更新step 
+        if (walkingTimer >= STEP_TIME)
+            step = 1;
+        else
+            step = 0;
+        walkingTimer = (walkingTimer + (long)dt) % (STEP_TIME*2);//这里强制类型转换没问题但是不美观
+        //dt改成long类型会好一些，这里为了和Mario保持一致
     }    
 }
