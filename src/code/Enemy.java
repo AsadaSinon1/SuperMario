@@ -50,7 +50,7 @@ public class Enemy {
     void death() throws Exception
     {
         if (lifeState != LifeState.ALIVE)
-            throw new Exception("对不是活着的怪物调用death（）")
+            throw new Exception("对不是活着的怪物调用death（）");
         lifeState = LifeState.REMAIN;
         deathTime = System.currentTimeMillis();
         speedX = 0;//杀死怪物后，速度变为0
