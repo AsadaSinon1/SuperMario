@@ -34,12 +34,19 @@ In this section, we introduce the important updates.
 
 ### May 16th
 
-We successfully formed a team and created this repository on GitHub.
+- We successfully formed a team and created this repository on GitHub.
 
 ### May 23rd
 
-We have completed the testing of Mario's wall jump mechanic and plan to incorporate the sprint and long jump mechanics.
+- We have completed the testing of Mario's wall jump mechanic and plan to incorporate the sprint and long jump mechanics.
 
 ### May 27th
 
-We finished the beautiful Game enter interface and uploaded all the textures of Mario
+- We finished the beautiful Game enter interface and uploaded all the textures of Mario
+
+### May 30th
+
+- We implemented the Enemy class and its subclass Mushroom.
+- The Mario class implemented the ability to sprint.
+- We completed the initial code integration and decomposed the Mario class.
+- We attempted and implemented a simple map design.
