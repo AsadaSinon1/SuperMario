@@ -185,11 +185,7 @@ public class LoginFrame extends JFrame {
                             }
                             else{
                                 //弹出错误弹窗
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    public void run() {
-                                        new MessageFrame(1);
-                                    }
-                                });
+                                SwingUtilities.invokeLater(() -> new MessageFrame(1));
                             }
                         }
                         public void mouseEntered(MouseEvent arg0) {

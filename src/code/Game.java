@@ -3,12 +3,17 @@ package src.code;
 import javax.swing.*;
 import java.awt.*;
 
-public class Game extends JFrame {
+/**
+ * 此类是与LevelChosenPanel衔接的类，即点击对应关卡后生成的类
+ */
+public class Game{
 
     private Map currMap;
-    Game(){
+    Game(int mapId){
+        currMap = new Map(mapId);
+        SwingUtilities.invokeLater(new Backstage(currMap));
     }
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Backstage::new);
+        new Game(1);
     }
 }

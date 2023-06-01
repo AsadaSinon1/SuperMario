@@ -5,12 +5,14 @@ import javax.swing.*;
 import java.awt.event.*;
 
 public class Mario{
+    // 血量
+    int HP;
     //走路速度、起跳速度、重力加速度
     final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003;
     //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、边缘容错度
     static final int WIDTH = 800, HEIGHT = 640, pixel = 5;
     final int width = 30,height = 40;
-    static final int MAP_NUM = 3,delay = 100,dashDelay = 250;
+    static final int delay = 100,dashDelay = 250;
     //人物x,y坐标、水平速度、垂直速度
     double x,y,vx,vy;
     //上一帧方向（-1，1），上一帧跑步状态（1，2，3，4）
@@ -19,21 +21,15 @@ public class Mario{
     boolean left,right,fall,jump,death,faceRight,dashAble,dash;
     //左侧是否有墙、右侧是否有墙、是否触发左蹬墙跳、是否触发右蹬墙跳
     boolean wallLeft,wallRight,wallLeftJump,wallRightJump;
-    //分数、当前地图编号、地图（0为空气，1为墙，2为金币，3为死亡）
-    static int grade,mapId;
-    static int[][][] map = new int[MAP_NUM][WIDTH/pixel+10][HEIGHT/pixel+10];
-    //金币
-    ArrayList<Coin> coins = new ArrayList<>();
+    //分数、地图（0为空气，1为墙，2为金币，3为死亡）
+    static int grade;
+    static int[][] map = new int[WIDTH/pixel+10][HEIGHT/pixel+10];
     //上一次粘在左（右）墙的时刻（用来调整蹬墙容错）、上一次跳跃的时刻、上一次在地面的时刻
     long timeLeft,timeRight,timeJump,timeOnGround,timeDash;
 
     //设计地图函数，可修改
-    void initMap(int [][][]map){
+    void initMap(int [][]map){
         this.map = map;
-    }
-    void addCoin(Coin coin){
-        map[coin.id][coin.x][coin.y] = 2;
-        coins.add(coin);
     }
 
     public String findDirection(){
@@ -91,10 +87,10 @@ public class Mario{
         return "RunRight1";
     }
 
-    //重生（op=0表示当前地图重生，op=1表示下一个地图重生），可修改
-    void respawn(int op){
-        mapId+=op;
-        x = 0;y = 0;vy = 0;
+    //重生（）
+    void respawn(double rsbX,double rsbY){
+        x = rsbX;y = rsbY;
+        vy = 0;
         fall = faceRight = dashAble = true;
         death = dash = left = right = jump = false;
         wallLeft = wallRight = false;
@@ -115,10 +111,10 @@ public class Mario{
         if(px<0)px = 0;
         for(int i = 0;i<width/pixel;i++)
             for(int j = 0;j<height/pixel;j++){
-                int val = map[mapId][px+i][py+j];
+                int val = map[px+i][py+j];
                 if(val!=num)continue;
                 if(num==2){
-                    map[mapId][px+i][py+j] = 0;
+                    map[px+i][py+j] = 0;
                     grade+=1000;
                 }
                 return true;
@@ -126,7 +122,7 @@ public class Mario{
         return false;
     }
     //更新每一帧所有状态（尽量不要修改）
-    void update(double dt,long curTime){
+    void update(double dt,long curTime) throws MyException.Death,MyException.NextMap {
         double newx = x+dt*vx,newy = dash?y:y-dt*vy,t = 0;
         //碰撞检测+调节
         if(check(newx,newy,1)){
@@ -142,19 +138,19 @@ public class Mario{
         if(x<0)x = 0;
         if(y<0)y = 0;
         if(x>WIDTH-width){
-            if(mapId==MAP_NUM-1)x = WIDTH-width;
-            else respawn(1);
+            throw new MyException.NextMap();
         }
         //金币、死亡检测
         check(x,y,2);
         if(check(x,y,3)){
             death = true;
-            respawn(0);
+            HP--;
+            throw new MyException.Death();
         }
         //离地检测
         int px = pixelate(x)/pixel,py = pixelate(y)/pixel;
         boolean flag = false;
-        for(int i = 0;i<width/pixel;i++)if(map[mapId][px+i][py+height/pixel]==1)flag = true;
+        for(int i = 0;i<width/pixel;i++)if(map[px+i][py+height/pixel]==1)flag = true;
         if(flag){
             if(vy<0)vy = 0;
             fall = false;
@@ -162,14 +158,14 @@ public class Mario{
         //头顶检测
         if(vy>0&&py>0){
             flag = false;
-            for(int i = 0;i<width/pixel;i++)if(map[mapId][px+i][py-1]==1)flag = true;
+            for(int i = 0;i<width/pixel;i++)if(map[px+i][py-1]==1)flag = true;
             if(flag)vy = -0.5*vy;
         }
         //速度更新+左右墙体检测（too hard）
         if(fall){
             wallLeft = wallRight = false;
-            for(int i = 0;i<height/pixel;i++)if(px>0&&map[mapId][px-1][py+i]==1)wallLeft = true;
-            for(int i = 0;i<height/pixel;i++)if(map[mapId][px+width/pixel][py+i]==1)wallRight = true;
+            for(int i = 0;i<height/pixel;i++)if(px>0&&map[px-1][py+i]==1)wallLeft = true;
+            for(int i = 0;i<height/pixel;i++)if(map[px+width/pixel][py+i]==1)wallRight = true;
             if(wallLeft)timeLeft = curTime;
             if(wallRight)timeRight = curTime;
             if(wallLeft||wallRight){
@@ -204,13 +200,4 @@ public class Mario{
     }
 
 
-}
-
-class Coin{
-    int id,x,y;
-    Coin(int id,int x,int y){
-        this.id = id;
-        this.x = x;
-        this.y = y;
-    }
 }

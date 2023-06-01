@@ -90,7 +90,7 @@ public class Enemy {
      */
     boolean isEntity(int pixelx,int pixely) throws Exception
     {
-        int type=Mario.map[curMapId][pixelx][pixely];
+        int type=Mario.map[pixelx][pixely];
         //地图块类型 目前：0为空气，1为墙，2为金币，3为死亡，待改，需要持续更新,更新完应改成enum类
         if(type==1)
             return true;

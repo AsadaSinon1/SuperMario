@@ -109,13 +109,11 @@ public class GameStartFrame extends JFrame {
         setContentPane(panel2);
         validate();
         panel2.addAction(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        dispose();
-                        LoginFrame loginFrame = new LoginFrame();
-                        loginFrame.showPanel1();
-                        loginFrame.setVisible(true);
-                    }
+                e -> {
+                    dispose();
+                    LoginFrame loginFrame = new LoginFrame();
+                    loginFrame.showPanel1();
+                    loginFrame.setVisible(true);
                 });
     }
     public static void main(String[] args){
