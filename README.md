@@ -50,3 +50,9 @@ In this section, we introduce the important updates.
 - The Mario class implemented the ability to sprint.
 - We completed the initial code integration and decomposed the Mario class.
 - We attempted and implemented a simple map design.
+
+### June 1st
+
+- The Plot class has been designated as an inner class of the Map class, and corresponding inner classes with appropriate file structures have been added to facilitate future map design. This improves code maintainability.
+- The Plot class implements the JPanel class and the KeyListener interface, while the Backstage class implements the JFrame class and the Runnable and ActionListener interfaces.
+- We replaced the while loop in the run function with the start function of a Timer object to prevent blocking the event dispatch thread.
