@@ -32,6 +32,7 @@ public class Mario{
         this.map = map;
     }
 
+    // 查找模型朝向
     public String findDirection(){
         if(fall&&wallLeft&&left){
             lastDirection = -1;
@@ -87,7 +88,7 @@ public class Mario{
         return "RunRight1";
     }
 
-    //重生（）
+    //重生（参数为重生坐标）
     void respawn(double rsbX,double rsbY){
         x = rsbX;y = rsbY;
         vy = 0;

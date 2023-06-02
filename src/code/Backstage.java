@@ -8,9 +8,16 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import javax.swing.Timer;
+
+/**
+ * Backstage类，JFrame的子类，每张地图都由一个Backstage类实现后台操作，包括Plot的展示、定时更新与运行
+ * 每个后台都控制着Mario的数据，并与当前Plot交互，死亡或进入新场景会更换Plot
+ */
 public class Backstage extends JFrame implements Runnable, ActionListener {
+    // 后台进程
     Thread thread = new Thread(this);
 
+    // 后台刷新计时器
     Timer timer = new Timer(20,this);
     // 后台所属地图
     Map currMap;
@@ -39,6 +46,9 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
         thread.start();
     }
 
+    /**
+     * 更换场景并且重新设置组件的聚焦点，初始化mario的数字地图
+     */
     public void changePlot(){
         currPlot = currMap.plotPool.get(plotId-1);
         currPlot.mario=mario;
@@ -54,23 +64,29 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
         currPlot.requestFocus();
         mario.initMap(currPlot.info.digitalMap);
     }
+    // 线程运行函数
     @Override
     public void run() {
         prevTime = System.currentTimeMillis();
         timer.start();
     }
 
+    // 刷新起始时间
     long curTime,prevTime;
 
+    // repaint时间间隔
     int interval=0;
+    // 计时器周期运行函数
     @Override
     public void actionPerformed(ActionEvent ae) {
 
         curTime = System.currentTimeMillis();
 
+        //更新Enemy状态
         for(Enemy enemy:currPlot.enemyList)
             enemy.update(curTime - prevTime, curTime);
 
+        //更新Mario状态
         try {
             mario.update(curTime - prevTime, curTime);
         } catch (MyException.Death e) {
@@ -89,6 +105,7 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
         }
 
 
+        // 刷新JPanel
         if(interval==0) currPlot.paintImmediately(0,0, currPlot.screenWidth,currPlot.screenHeight);
         interval = (interval+1)%2;
         prevTime = curTime;

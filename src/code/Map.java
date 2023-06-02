@@ -10,6 +10,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Map类，与地图文件相对应，读取地图文件信息，并且创建对应数量的Plot
+ */
 public class Map {
     // 地图编号
     int mapId;
@@ -26,7 +29,7 @@ public class Map {
     }
 
     /**
-     * Map的内部类，Map信息
+     * Map的内部类，Map文件信息
      */
     class MapInfo {
         //血量上限
@@ -44,6 +47,7 @@ public class Map {
 
     /**
      * Map的内部类，Plot类
+     * JPanel的子类，读取Plot文件信息，绘制Plot图像
      */
     class Plot extends JPanel implements KeyListener {
         final String filename;
