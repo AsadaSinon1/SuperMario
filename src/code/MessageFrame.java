@@ -50,8 +50,16 @@ public class MessageFrame extends JFrame {
             label = new JLabel("<html>This user name is used.<br>Please choose another one!</html>");
             label.setBounds(40,20,200,100);
         }
-        else{
+        else if(kind == 3){
             label = new JLabel("<html>Registered successfully!<br>Go back to sign in!</html>");
+            label.setBounds(40,20,200,100);
+        }
+        else if(kind == 4){
+            label = new JLabel("Wrong password!");
+            label.setBounds(40,20,200,100);
+        }
+        else{
+            label = new JLabel("<html>The password entered<br>twice do not match!</html>");
             label.setBounds(40,20,200,100);
         }
         label.setFont(font);
