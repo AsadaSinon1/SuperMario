@@ -168,36 +168,20 @@ public class Map {
                 if(mario.dash)return;
                 if(mario.vx==0)mario.vx = -mario.walkSpeed;
                 if(!mario.right)mario.faceRight = false;
-                if(mario.jump&&curTime<mario.timeJump+mario.delay&&curTime<mario.timeRight+mario.delay&&!mario.wallRightJump&&!mario.wallLeftJump){
-                    mario.vy = mario.jumpSpeed*0.8;
-                    mario.vx = -mario.walkSpeed;
-                    mario.wallLeftJump = true;
-                }
+                if(mario.jump&&curTime<mario.timeJump+mario.delay)mario.jumpLeft(curTime);
             }
             if (code==KeyEvent.VK_D){
                 mario.right = true;
                 if(mario.dash)return;
                 if(mario.vx==0)mario.vx = mario.walkSpeed;
                 if(!mario.left)mario.faceRight = true;
-                if(mario.jump&&curTime<mario.timeJump+mario.delay&&curTime<mario.timeLeft+mario.delay&&!mario.wallRightJump&&!mario.wallLeftJump){
-                    mario.vy = mario.jumpSpeed*0.8;
-                    mario.vx = mario.walkSpeed;
-                    mario.wallRightJump = true;
-                }
+                if(mario.jump&&curTime<mario.timeJump+mario.delay)mario.jumpRight(curTime);
             }
             if (code==KeyEvent.VK_SPACE){
                 if(mario.dash)return;
                 if((!mario.jump&&!mario.fall)||(mario.fall&&curTime<mario.timeOnGround+mario.delay))mario.vy = mario.jumpSpeed;
-                if(mario.right&&curTime<mario.timeLeft+mario.delay&&!mario.jump&&!mario.wallRightJump&&!mario.wallLeftJump){
-                    mario.vy = mario.jumpSpeed*0.8;
-                    mario.vx = mario.walkSpeed;
-                    mario.wallRightJump = true;
-                }
-                if(mario.left&&curTime<mario.timeRight+mario.delay&&!mario.jump&&!mario.wallLeftJump&&!mario.wallRightJump){
-                    mario.vy = mario.jumpSpeed*0.8;
-                    mario.vx = -mario.walkSpeed;
-                    mario.wallLeftJump = true;
-                }
+                if(mario.right&&!mario.jump)mario.jumpRight(curTime);
+                if(mario.left&&!mario.jump)mario.jumpLeft(curTime);
                 mario.fall = mario.jump = true;
                 mario.timeJump = curTime;
             }
