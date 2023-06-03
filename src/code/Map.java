@@ -20,7 +20,10 @@ public class Map {
     ArrayList<Plot> plotPool = new ArrayList<>();
     // 地图信息
     MapInfo info;
-    Map(int mapId){
+    // 游戏控制器
+    Game controller;
+    Map(int mapId,Game controller){
+        this.controller=controller;
         this.mapId = mapId;
         this.info = new MapInfo();
         // 将Plot按照顺序add进入plotPool
@@ -252,6 +255,10 @@ public class Map {
                 for (int i = 120; i < 128; i++)
                     for (int j = 104; j < 112;j++)
                         digitalMap[i][j] = 1;
+                if(content.equals("end"))
+                    for(int i = 100;i<150;i++)
+                        for (int j = 104;j<112;j++)
+                            digitalMap[i][j] = 2;
                 // 设置重生点
                 rsbX = rsbY = 0;
             }

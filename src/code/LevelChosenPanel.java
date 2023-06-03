@@ -23,7 +23,9 @@ public class LevelChosenPanel extends JPanel {
     private JLabel frame2;
     private JLabel frame3;
     private JLabel frame4;
-    LevelChosenPanel(){
+    private String filePath;
+    LevelChosenPanel(String filePath){
+        this.filePath = filePath;
         setBackground(new Color(90,150,250));
         setBounds(0,0,800,640);
         setLayout(null); // 去掉默认的布局管理器
@@ -88,13 +90,22 @@ public class LevelChosenPanel extends JPanel {
         frame4.setVisible(false);
         this.add(frame4);
 
-        ImageIcon tmp =new ImageIcon("src/image/UI参考.jpeg");
-        level1 = new JLabel(tmp);
+        ImageIcon tmp =new ImageIcon("src/image/goldCoin.png");
+        tmp = new ImageIcon(tmp.getImage().getScaledInstance(70,60, Image.SCALE_SMOOTH));
+
+        final boolean level1Arrived = FileOperation.searchFile(this.filePath+"/level1","level1.mapinfo");
+        // 到达才能进入
+        level1 = level1Arrived?new JLabel(tmp):new JLabel();
         level1.setBounds(360,75,180,170);
         level1.addMouseListener(
                 new MouseListener() {
                     public void mouseClicked(MouseEvent arg0) {
-                        //进入关卡1
+                        if(level1Arrived)
+                        {
+                            SwingUtilities.getWindowAncestor(level1).setVisible(false);
+                            //进入关卡1
+                            new Game(filePath,1);
+                        }
                     }
                     public void mouseEntered(MouseEvent arg0) {
                         frame1.setVisible(true);
@@ -108,12 +119,19 @@ public class LevelChosenPanel extends JPanel {
         );
         this.add(level1);
 
-        level2 = new JLabel(tmp);
+        final boolean level2Arrived = FileOperation.searchFile(this.filePath+"/level2","level2.mapinfo");
+        // 到达才能进入
+        level2 = level2Arrived?new JLabel(tmp):new JLabel();
         level2.setBounds(573,75,180,170);
         level2.addMouseListener(
                 new MouseListener() {
                     public void mouseClicked(MouseEvent arg0) {
-                        //进入关卡2
+                        if(level2Arrived)
+                        {
+                            SwingUtilities.getWindowAncestor(level2).setVisible(false);
+                            //进入关卡2
+                            new Game(filePath, 2);
+                        }
                     }
                     public void mouseEntered(MouseEvent arg0) {
                         frame2.setVisible(true);
@@ -127,12 +145,18 @@ public class LevelChosenPanel extends JPanel {
         );
         this.add(level2);
 
-        level3 = new JLabel(tmp);
+        final boolean level3Arrived = FileOperation.searchFile(this.filePath+"/level3","level3.mapinfo");
+        // 到达才能进入
+        level3 = level3Arrived?new JLabel(tmp):new JLabel();
         level3.setBounds(30,350,180,170);
         level3.addMouseListener(
                 new MouseListener() {
                     public void mouseClicked(MouseEvent arg0) {
-                        //进入关卡3
+                        if(level3Arrived){
+                            SwingUtilities.getWindowAncestor(level3).setVisible(false);
+                            //进入关卡3
+                            new Game(filePath, 3);
+                        }
                     }
                     public void mouseEntered(MouseEvent arg0) {
                         frame3.setVisible(true);
@@ -144,14 +168,21 @@ public class LevelChosenPanel extends JPanel {
                     public void mouseReleased(MouseEvent arg0) {}
                 }
         );
+
         this.add(level3);
 
-        level4 = new JLabel(tmp);
+        final boolean level4Arrived = FileOperation.searchFile(this.filePath+"/level4","level4.mapinfo");
+        // 到达才能进入
+        level4 = level4Arrived?new JLabel(tmp):new JLabel();
         level4.setBounds(243,350,180,170);
         level4.addMouseListener(
                 new MouseListener() {
                     public void mouseClicked(MouseEvent arg0) {
-                        //进入关卡4
+                        if(level4Arrived){
+                            SwingUtilities.getWindowAncestor(level4).setVisible(false);
+                            //进入关卡4
+                            new Game(filePath, 4);
+                        }
                     }
                     public void mouseEntered(MouseEvent arg0) {
                         frame4.setVisible(true);

@@ -11,4 +11,9 @@ public class MyException{
             super();
         }
     }
+    static class Exit extends Exception{
+        Exit(){
+            super();
+        }
+    }
 }

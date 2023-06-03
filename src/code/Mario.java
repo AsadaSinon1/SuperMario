@@ -21,7 +21,7 @@ public class Mario{
     boolean left,right,fall,jump,death,faceRight,dashAble,dash;
     //左侧是否有墙、右侧是否有墙、是否触发左蹬墙跳、是否触发右蹬墙跳
     boolean wallLeft,wallRight,wallLeftJump,wallRightJump;
-    //分数、地图（0为空气，1为墙，2为金币，3为死亡）
+    //分数、地图（0为空气，1为墙，2为出口，3为死亡）
     static int grade;
     static int[][] map = new int[WIDTH/pixel+10][HEIGHT/pixel+10];
     //上一次粘在左（右）墙的时刻（用来调整蹬墙容错）、上一次跳跃的时刻、上一次在地面的时刻
@@ -107,23 +107,20 @@ public class Mario{
         return t;
     }
     //碰撞检测
-    boolean check(double curx,double cury,int num){
+    boolean check(double curx,double cury,int num) throws MyException.Exit {
         int px = pixelate(curx)/pixel,py = pixelate(cury)/pixel;
         if(px<0)px = 0;
         for(int i = 0;i<width/pixel;i++)
             for(int j = 0;j<height/pixel;j++){
                 int val = map[px+i][py+j];
                 if(val!=num)continue;
-                if(num==2){
-                    map[px+i][py+j] = 0;
-                    grade+=1000;
-                }
+                if(num==2) throw new MyException.Exit();
                 return true;
             }
         return false;
     }
     //更新每一帧所有状态（尽量不要修改）
-    void update(double dt,long curTime) throws MyException.Death,MyException.NextMap {
+    void update(double dt,long curTime) throws MyException.Death, MyException.NextMap, MyException.Exit {
         double newx = x+dt*vx,newy = dash?y:y-dt*vy,t = 0;
         //碰撞检测+调节
         if(check(newx,newy,1)){
@@ -135,18 +132,18 @@ public class Mario{
             x = newx;
             y = newy;
         }
-        //地图边缘检测
-        if(x<0)x = 0;
-        if(y<0)y = 0;
-        if(x>WIDTH-width){
-            throw new MyException.NextMap();
-        }
-        //金币、死亡检测
+        //通关、死亡检测
         check(x,y,2);
         if(check(x,y,3)){
             death = true;
             HP--;
             throw new MyException.Death();
+        }
+        //地图边缘检测
+        if(x<0)x = 0;
+        if(y<0)y = 0;
+        if(x>WIDTH-width){
+            throw new MyException.NextMap();
         }
         //离地检测
         int px = pixelate(x)/pixel,py = pixelate(y)/pixel;

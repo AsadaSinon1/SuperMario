@@ -8,6 +8,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 
 public class LoginFrame extends JFrame {
     private JPanel panel1;
@@ -16,7 +21,7 @@ public class LoginFrame extends JFrame {
 
     LoginFrame(){
         setTitle("Login");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         getContentPane().setBackground(new Color(100, 149, 237));
         setSize(400,500);
         setResizable(false);
@@ -200,13 +205,14 @@ public class LoginFrame extends JFrame {
                             //告知用户输入的用户名不正确
                             boolean found = false;
                             String inputText = textField1.getText();
-                            found = FileOperation.searchFile(inputText);
+                            found = FileOperation.searchFile("src/save",inputText);
                             if(found){
                                 boolean right = (SQLConnection.SearchPassword(inputText).equals(new String(passwordField.getPassword())));
+                                right = true;//TODO: delete this
                                 if(right){
                                     dispose();
                                     GameStartFrame frame = new GameStartFrame();
-                                    frame.add(new LevelChosenPanel());
+                                    frame.add(new LevelChosenPanel("src/save/"+inputText));
                                     frame.setVisible(true);
                                 }
                                 else{
@@ -273,7 +279,6 @@ public class LoginFrame extends JFrame {
             setBounds(0,0,400,500);
             setBackground(new Color(100, 149, 237));
             setLayout(null);
-
 
             ImageIcon icon1 = new ImageIcon("src/image/welcome.png");
             label1 = new JLabel(icon1);
@@ -376,30 +381,27 @@ public class LoginFrame extends JFrame {
                             //在save中查找该以该用户名命名的文件夹是否存在，若存在，提醒用户改用户名已被使用
                             //不存在，创建用户名存入save
                             String inputText = textField1.getText();
-                            boolean found = FileOperation.searchFile(inputText);
+                            boolean found = FileOperation.searchFile("src/save", inputText);
                             if(found){
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    public void run() {
-                                        new MessageFrame(2);
-                                    }
-                                });
+                                SwingUtilities.invokeLater(() -> new MessageFrame(2));
                             }
                             else{
                                 boolean isEqual = (new String(passwordField1.getPassword()).equals(new String(passwordField2.getPassword())));
                                 if(isEqual){
-                                    FileOperation.insertFile(inputText,new String(passwordField1.getPassword()));
-                                    SwingUtilities.invokeLater(new Runnable() {
-                                        public void run() {
-                                            new MessageFrame(3);
-                                        }
-                                    });
+                                    FileOperation.insertFile("src/save",inputText,new String(passwordField1.getPassword()));
+                                    FileOperation.insertFile("src/save/"+inputText,"level1","");
+                                    FileOperation.insertFile("src/save/"+inputText,"level2","");
+                                    FileOperation.insertFile("src/save/"+inputText,"level3","");
+                                    FileOperation.insertFile("src/save/"+inputText,"level4","");
+                                    if(FileOperation.copyFile("src/map/level1","src/save/"+inputText+"/level1"))
+                                        SwingUtilities.invokeLater(() -> new MessageFrame(3));
+                                    else{
+                                        JOptionPane.showMessageDialog(null, "Cannot open the file!!!", "Error", JOptionPane.INFORMATION_MESSAGE);
+                                        System.exit(ERROR);
+                                    }
                                 }
                                 else{
-                                    SwingUtilities.invokeLater(new Runnable() {
-                                        public void run() {
-                                            new MessageFrame(5);
-                                        }
-                                    });
+                                    SwingUtilities.invokeLater(() -> new MessageFrame(5));
                                 }
                             }
                         }
@@ -451,15 +453,15 @@ public class LoginFrame extends JFrame {
     }
 }
 class FileOperation {
-    public static boolean searchFile(String userName) {
+    public static boolean searchFile(String path, String userName) {
         // 要查找的目录和文件名
         boolean found = false;
-        File folder = new File("src/save"); // 目标文件夹的路径
+        File folder = new File(path); // 目标文件夹的路径
         if (folder.exists() && folder.isDirectory()) {
             // 文件夹存在，遍历目录，查找是否有同名文件夹
             File[] files = folder.listFiles();
             for (File file : files) {
-                if (file.isDirectory() && file.getName().equals(userName)) {
+                if (file.getName().equals(userName)) {
                     found = true;
                 }
             }
@@ -467,20 +469,39 @@ class FileOperation {
         return found;
     }
 
-    public static boolean insertFile(String fileName,String password) {
+    public static boolean insertFile(String path, String fileName,String password) {
         //目录下存在已该用户名命名的文件，该用户无法创建
-        File filedir = new File("src/save/"+fileName);
-        //if(searchFile(fileName))return false;
+        File filedir = new File(path+'/'+fileName);
+        if(searchFile(path,fileName))return false;
         filedir.mkdir();
-        //在数据库中创建用户信息
-        SQLConnection.Update(fileName,password,0,true);
+        if(Objects.equals(path, "src/save"))
+            //在数据库中创建用户信息
+            SQLConnection.Update(fileName,password,0,true);
         return true;
+    }
+
+    public static boolean copyFile(String source, String target){
+        Path sourceFolder = Paths.get(source);
+        Path targetFolder = Paths.get(target);
+        try {
+            // 复制地图文件夹及其内容
+            Files.walk(sourceFolder)
+                    .forEach(src -> {
+                        try {
+                            Path tgt = targetFolder.resolve(sourceFolder.relativize(src));
+                            Files.copy(src, tgt, StandardCopyOption.COPY_ATTRIBUTES);
+                        } catch (IOException ignored) {}
+                    });
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
 class passwordBtn extends JButton{
     public boolean show;
     passwordBtn(){
-        setText("show/hide.");
+        setText("show/hide");
         setBackground(Color.GRAY);
         show = false;
     }

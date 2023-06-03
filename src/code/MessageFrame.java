@@ -10,7 +10,7 @@ public class MessageFrame extends JFrame {
     private JButton button;
     MessageFrame(int kind){
         setTitle("Error");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         getContentPane().setBackground(Color.GRAY);
         setSize(300,200);
         setResizable(false);

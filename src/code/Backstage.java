@@ -37,10 +37,14 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
 
         currPlot.setPreferredSize(new Dimension(800,640));
 
+        int showWidth = (Toolkit.getDefaultToolkit().getScreenSize().width - currPlot.screenWidth)/2;
+        int showHeight = (Toolkit.getDefaultToolkit().getScreenSize().height - currPlot.screenHeight)/2;
+        this.setLocation(showWidth,showHeight);
+
         this.pack();
         this.setResizable(false);
         this.setVisible(true);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         thread.setDaemon(true);
         thread.start();
@@ -58,6 +62,7 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
             JOptionPane.showMessageDialog(null, "Cannot open the file!!!", "Error", JOptionPane.INFORMATION_MESSAGE);
             System.exit(ERROR);
         }
+
 
         this.setContentPane(currPlot);
         this.setVisible(true);
@@ -98,7 +103,9 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
                 mario.HP=currMap.info.upperHP;
                 mario.respawn(currPlot.info.rsbX, currPlot.info.rsbY);
             }
-        } catch (MyException.NextMap e){
+        } catch (MyException.Exit e) {
+            changeMap();
+        } catch (MyException.NextMap e) {
             plotId++;
             changePlot();
             mario.respawn(0, mario.y);
@@ -110,5 +117,14 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
         interval = (interval+1)%2;
         prevTime = curTime;
 
+    }
+    // 进入选关界面
+    public void changeMap() {
+        //TODO: SQL操作
+
+        // 退出
+        this.setVisible(false);
+        currMap.controller.nextGame();
+        thread.interrupt();
     }
 }
