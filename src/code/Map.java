@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static java.awt.image.ImageObserver.ERROR;
+
 /**
  * Map类，与地图文件相对应，读取地图文件信息，并且创建对应数量的Plot
  */
@@ -25,10 +27,25 @@ public class Map {
     Map(int mapId,Game controller){
         this.controller=controller;
         this.mapId = mapId;
-        this.info = new MapInfo();
+        try {
+            parseMap();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Cannot open the file!!!", "Error", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(ERROR);
+        }
         // 将Plot按照顺序add进入plotPool
         for(int i = 0; i<this.info.plotNum; i++)
             plotPool.add(new Plot("src/map/level"+mapId+"/plots/plot"+ (i + 1) +".plotinfo"));
+    }
+    public void parseMap() throws IOException {
+        FileInputStream fis = new FileInputStream("src/map/level"+mapId+"/level"+mapId+".mapinfo");
+        // 读取文件内容
+        byte[] buffer = new byte[(int) fis.available()];
+        fis.read(buffer);
+        // 将字节数组转换为字符串
+        info = new MapInfo(new String(buffer));
+        // 关闭FileInputStream
+        fis.close();
     }
 
     /**
@@ -41,10 +58,10 @@ public class Map {
         int grade;
         // 场景数量
         int plotNum;
-        MapInfo(){
+        MapInfo(String content){
             upperHP = 3;
             grade = 0;
-            plotNum = 2;
+            plotNum = Integer.parseInt(content);
         }
     }
 
@@ -110,6 +127,7 @@ public class Map {
 
             // 绘制砖块照片
             for (int i = 0; i < 20; i++) {
+                if(info.death&&(i==6||i==7)) continue;
                 for (int j = 1; j < 3; j++) {
                     g2d.drawImage(image2, i * 40 - 2, this.screenHeight - j * this.blockSize,
                             this.blockSize + 2, this.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
@@ -240,10 +258,12 @@ public class Map {
             int WIDTH,HEIGHT,pixel;
             int[][] digitalMap;
             int rsbX, rsbY;
-            boolean end;
+            // for test
+            boolean end,death;
             ArrayList<Enemy> enemyList = new ArrayList<>();
             public PlotInfo(String content) {
                 end = content.equals("end");
+                death = content.equals("death");
                 WIDTH = 800;
                 HEIGHT = 640;
                 pixel = 5;
@@ -265,6 +285,15 @@ public class Map {
                     for(int i = 112;i<120;i++)
                         for (int j = 104;j<112;j++)
                             digitalMap[i][j] = 2;
+                if(death)
+                {
+                    for(int i = 48;i<64;i++)
+                        for (int j = 120;j<128;j++)
+                            digitalMap[i][j] = 3;
+                    for(int i = 48;i<64;i++)
+                        for (int j = 112;j<120;j++)
+                            digitalMap[i][j] = 0;
+                }
                 // 设置重生点
                 rsbX = rsbY = 0;
             }
