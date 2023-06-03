@@ -7,8 +7,8 @@ import java.awt.event.*;
 public class Mario{
     // 血量
     int HP;
-    //走路速度、起跳速度、重力加速度
-    final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003;
+    //走路速度、起跳速度、重力加速度、摩擦系数(值越小效果越明显)
+    final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003,mu = 0.1;
     //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、边缘容错度
     static final int WIDTH = 800, HEIGHT = 640, pixel = 5;
     final int width = 30,height = 40;
@@ -17,7 +17,8 @@ public class Mario{
     double x,y,vx,vy;
     //上一帧跑步状态（1，2，3，4）
     int lastState;
-    boolean canDash = true,canWallJump = true;
+    // 是否有冲刺、蹬墙跳、抓墙能力 TODO:修改参数
+    boolean canDash = true,canWallJump = true,canGrabWall = true;
     //左方向是否按下、右方向是否按下、是否离地、跳跃键是否按下、是否死亡
     boolean left,right,fall,jump,death,faceRight,dashAble,dash;
     //左侧是否有墙、右侧是否有墙、是否触发左蹬墙跳、是否触发右蹬墙跳
@@ -35,11 +36,11 @@ public class Mario{
 
     // 查找模型朝向
     public String findDirection(){
-        if(fall&&wallLeft&&left){
+        if(fall&&wallLeft&&left&&canGrabWall){
             lastState=1;
             return "SlideLeft";
         }
-        if(fall&&wallRight&&right){
+        if(fall&&wallRight&&right&&canGrabWall){
             lastState=1;
             return "SlideRight";
         }
@@ -174,13 +175,13 @@ public class Mario{
                 dash = false;
             }
             boolean onWall = (wallLeft&&left)||(wallRight&&right);
-            double rate = onWall?0.3:1.0;
+            double rate = onWall&&canGrabWall?mu:1.0;
             if(vy>0)vy-=dt*g*(jump?0.5:3.0)*(onWall?1.5:1.0);
             else vy-=dt*g*rate;
             if(vy<-jumpSpeed*rate)vy = -jumpSpeed*rate;
         }else{
             timeOnGround = curTime;
-            dashAble = true;
+            if(canDash) dashAble = true;
         }
         if(dash){
             long deltaTime = curTime-timeDash;

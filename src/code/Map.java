@@ -122,7 +122,7 @@ public class Map {
 
             // 获取缓冲图像的Graphics2D对象
             Graphics2D g2d = bufferedImage.createGraphics();
-            // 绘制背景照片
+            // 绘制背景照d片
             g2d.drawImage(image1, 0, 0, this.screenWidth, this.screenHeight, null); // Changed by yyt.
 
             // 绘制砖块照片
@@ -133,6 +133,18 @@ public class Map {
                             this.blockSize + 2, this.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
                 } // +2，+4，是为了消除间隙。此乃曲线救国也！
             }
+
+            if(!info.end&&!info.death){
+                for (int j = 3; j < 12; j++) {
+                    g2d.drawImage(image2, -2, this.screenHeight - j * this.blockSize,
+                            this.blockSize + 2, this.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
+                }
+                for (int j = 3; j < 12; j++) {
+                    g2d.drawImage(image2, 160 - 2, this.screenHeight - j * this.blockSize,
+                            this.blockSize + 2, this.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
+                }
+            }
+
             g2d.drawImage(image2, 600 - 2, 520, blockSize + 2, blockSize + 4, null);//画一块砖，Test code by yyt.TODO: Delete this.
             if(info.end)
                 g2d.drawImage(image3, 560 - 2, 520, blockSize + 2, blockSize + 4, null);//画一个出口，Test code by yyt.TODO: Delete this.
@@ -253,7 +265,7 @@ public class Map {
                 digitalMap = new int[WIDTH/pixel+10][HEIGHT/pixel+10];;
                 // 设计敌人
                 Mushroom mushroom1 = new Mushroom(500, 0, 0);
-                Mushroom mushroom2 = new Mushroom(50, 200, 0);
+                Mushroom mushroom2 = new Mushroom(70, 200, 0);
                 enemyList.add(mushroom1);
                 enemyList.add(mushroom2);
                 // 设计地图
@@ -264,6 +276,16 @@ public class Map {
                 for (int i = 120; i < 128; i++)
                     for (int j = 104; j < 112;j++)
                         digitalMap[i][j] = 1;
+
+                if(!end&&!death) {
+                    for (int i = 0; i < 8; i++)
+                        for (int j = 40; j < 112; j++)
+                            digitalMap[i][j] = 1;
+                    for (int i = 32; i < 40; i++)
+                        for (int j = 40; j < 112; j++)
+                            digitalMap[i][j] = 1;
+                }
+
                 if(end)
                     for(int i = 112;i<120;i++)
                         for (int j = 104;j<112;j++)
