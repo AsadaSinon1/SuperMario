@@ -3,7 +3,7 @@ package src.code;
 import java.sql. * ;
 public class SQLConnection {
     //根据用户名在数据库中查找用户的得分情况
-    public static int Search(String userName) {
+    public static int SearchScore(String userName) {
         // 驱动程序名
         String driver = "com.mysql.cj.jdbc.Driver";
 
@@ -11,10 +11,10 @@ public class SQLConnection {
         String url = "jdbc:mysql://127.0.0.1:3306/db_for_mario";
 
         // MySQL的用户名
-        String user = "root";
+        String user = "mario_users";
 
         // MySQL的密码
-        String password = "mysqlroot";
+        String password = "supermario";
         int score = 0;
         try {
             // 加载驱动程序
@@ -54,12 +54,47 @@ public class SQLConnection {
         }
         return score;
     }
-    public static void Update(String userName,int newScore,boolean choice){
+    public static String SearchPassword(String userName) {
+        String driver = "com.mysql.cj.jdbc.Driver";
+        String url = "jdbc:mysql://127.0.0.1:3306/db_for_mario";
+        String user = "mario_users";
+        String password = "supermario";
+        String userPassword = "";
+        try {
+            Class.forName(driver);
+            Connection conn = DriverManager.getConnection(url, user, password);
+            if (!conn.isClosed()){
+                System.out.println("Successful Connection!");
+            }
+            Statement statement = conn.createStatement();
+            String sql = "SELECT * FROM mario_users WHERE name = '"+ userName + "'";
+            ResultSet rs = statement.executeQuery(sql);
+
+            while (rs.next()) {
+                userPassword = rs.getString("password");
+                System.out.println(userName +"'s password is " + userPassword);
+            }
+
+            //关闭
+            rs.close();
+            statement.close();
+            conn.close();
+        } catch(ClassNotFoundException e) {
+            System.out.println("Sorry,can't find the Driver!");
+            e.printStackTrace();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return userPassword;
+    }
+    public static void Update(String userName,String userPassword,int newScore,boolean choice){
         String driver = "com.mysql.cj.jdbc.Driver";
         String url = "jdbc:mysql://127.0.0.1:3306/db_for_mario";
 
-        String user = "root";
-        String password = "mysqlroot";
+        String user = "mario_users";
+        String password = "supermario";
         try{
             Class.forName(driver);
 
@@ -72,7 +107,7 @@ public class SQLConnection {
             Statement statement = conn.createStatement();
 
             // 要执行的SQL语句
-            String sql1 = "INSERT INTO mario_users (name,score)" + "VALUES ('"+ userName +"',0)";
+            String sql1 = "INSERT INTO mario_users (name,password,score)" + "VALUES ('"+ userName+"','"+userPassword +"',0)";
 
             String sql2 = "UPDATE mario_users SET score = "+ newScore +" WHERE name = '"+ userName + "'";
 
@@ -98,3 +133,4 @@ public class SQLConnection {
         }
     }
 }
+
