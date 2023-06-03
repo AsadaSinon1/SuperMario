@@ -63,4 +63,4 @@ In this section, we introduce the important updates.
 - We have separated abilities such as sprinting, wall jumps, and wall grabs, making Mario's abilities controllable.
 - We have introduced a password mechanism that requires SQL database support.
   
-***<font color = lightblue>It's a significant milestone that the game prototype has taken shape and is playable even without enemies.***
+***<font color = 'lightblue'>It's a significant milestone that the game prototype has taken shape and is playable even without enemies.***
