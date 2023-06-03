@@ -56,3 +56,11 @@ In this section, we introduce the important updates.
 - The Plot class has been designated as an inner class of the Map class, and corresponding inner classes with appropriate file structures have been added to facilitate future map design. This improves code maintainability.
 - The Plot class implements the JPanel class and the KeyListener interface, while the Backstage class implements the JFrame class and the Runnable and ActionListener interfaces.
 - We replaced the while loop in the run function with the start function of a Timer object to prevent blocking the event dispatch thread.
+
+### June 3rd
+
+- We have addressed several bugs to make the gameplay smoother.
+- We have separated abilities such as sprinting, wall jumps, and wall grabs, making Mario's abilities controllable.
+- We have introduced a password mechanism that requires SQL database support.
+  
+***<font color = lightblue>It's a significant milestone that the game prototype has taken shape and is playable even without enemies.***
