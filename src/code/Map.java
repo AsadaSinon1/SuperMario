@@ -114,6 +114,7 @@ public class Map {
             Image image1 = new ImageIcon("src/image/bgMountainCloud4.jpeg").getImage();
             Image image2 = new ImageIcon("src/image/boxBrick.png").getImage();
             Image image3 = new ImageIcon("src/image/boxQuestion.png").getImage();
+            Image image4 = new ImageIcon("src/image/goldCoin.png").getImage(); // TODO:我们需要heart
             // 创建一个缓冲图像
             // BufferedImage bufferedImage = new BufferedImage(image1.getWidth(null), image1.getHeight(null),
             //         BufferedImage.TYPE_INT_ARGB);
@@ -125,6 +126,12 @@ public class Map {
             // 绘制背景照d片
             g2d.drawImage(image1, 0, 0, this.screenWidth, this.screenHeight, null); // Changed by yyt.
 
+
+            // 绘制血量
+            for (int j = 0; j < mario.HP; j++) {
+                g2d.drawImage(image4, j * 40 - 2, 0,
+                        this.blockSize, this.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
+            }
             // 绘制砖块照片
             for (int i = 0; i < 20; i++) {
                 if(info.death&&(i==6||i==7)) continue;
