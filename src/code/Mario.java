@@ -15,8 +15,9 @@ public class Mario{
     static final int delay = 100,dashDelay = 250;
     //人物x,y坐标、水平速度、垂直速度
     double x,y,vx,vy;
-    //上一帧方向（-1，1），上一帧跑步状态（1，2，3，4）
-    int lastDirection, lastState;
+    //上一帧跑步状态（1，2，3，4）
+    int lastState;
+    boolean canDash = true,canWallJump = true;
     //左方向是否按下、右方向是否按下、是否离地、跳跃键是否按下、是否死亡
     boolean left,right,fall,jump,death,faceRight,dashAble,dash;
     //左侧是否有墙、右侧是否有墙、是否触发左蹬墙跳、是否触发右蹬墙跳
@@ -35,53 +36,42 @@ public class Mario{
     // 查找模型朝向
     public String findDirection(){
         if(fall&&wallLeft&&left){
-            lastDirection = -1;
             lastState=1;
             return "SlideLeft";
         }
         if(fall&&wallRight&&right){
-            lastDirection = 1;
             lastState=1;
             return "SlideRight";
         }
         if(fall&&jump&&vx>0){
-            lastDirection=1;
             lastState=1;
             return "JumpRight";
         }
         if(fall&&jump&&vx<0){
-            lastDirection=-1;
             lastState=1;
             return "JumpLeft";
         }
         if(fall&&jump&&vx==0){
             lastState=1;
-            if(lastDirection==1)return "JumpRight";
-            if(lastDirection==-1)return "JumpLeft";
+            return faceRight?"JumpRight":"JumpLeft";
         }
-        if(lastDirection==1&&vx>0){
+        if(vx==0){
+            lastState = 1;
+            return (faceRight?"RunRight":"RunLeft")+ lastState;
+        }
+        if(faceRight&&vx>0){
             lastState = lastState==1?2:(lastState-2+1)%3+2;
             return "RunRight"+ lastState;
         }
-        if(lastDirection==1&&vx==0){
-            lastState = 1;
-            return "RunRight"+ lastState;
-        }
-        if(lastDirection==1&&vx<0){
-            lastDirection = -1;
+        if(faceRight&&vx<0){
             lastState = 2;
             return "RunLeft"+ lastState;
         }
-        if(lastDirection==-1&&vx>0){
+        if(!faceRight&&vx>0){
             lastState = 2;
-            lastDirection = 1;
             return "RunRight"+ lastState;
         }
-        if(lastDirection==-1&&vx==0){
-            lastState = 1;
-            return "RunLeft"+ lastState;
-        }
-        if(lastDirection==-1&&vx<0){
+        if(!faceRight&&vx<0){
             lastState = lastState==1?2:(lastState-2+1)%3+2;
             return "RunLeft"+ lastState;
         }
@@ -91,15 +81,28 @@ public class Mario{
     //重生（参数为重生坐标）
     void respawn(double rsbX,double rsbY){
         x = rsbX;y = rsbY;
-        vy = 0;
-        fall = faceRight = dashAble = true;
+        vx = vy = 0;
+        dashAble = canDash;
+        fall = faceRight = true;
         death = dash = left = right = jump = false;
         wallLeft = wallRight = false;
         wallLeftJump = wallRightJump = false;
-        lastDirection = 1;
         lastState = 1;
     }
-
+    void jumpLeft(long curTime){
+        if(canWallJump&&curTime<timeRight+delay&&!wallRightJump&&!wallLeftJump){
+            vy = jumpSpeed*0.8;
+            vx = -walkSpeed;
+            wallLeftJump = true;
+        }
+    }
+    void jumpRight(long curTime){
+        if(canWallJump&&curTime<timeLeft+delay&&!wallRightJump&&!wallLeftJump){
+            vy = jumpSpeed*0.8;
+            vx = walkSpeed;
+            wallRightJump = true;
+        }
+    }
     //像素化坐标
     static int pixelate(double x){
         int t = (int)(x/pixel)*pixel;
