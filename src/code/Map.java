@@ -96,7 +96,6 @@ public class Map {
             // 加载两张照片
             Image image1 = new ImageIcon("src/image/bgMountainCloud4.jpeg").getImage();
             Image image2 = new ImageIcon("src/image/boxBrick.png").getImage();
-            Image image3 = new ImageIcon("src/image/boxQuestion.png").getImage();
             // 创建一个缓冲图像
             // BufferedImage bufferedImage = new BufferedImage(image1.getWidth(null), image1.getHeight(null),
             //         BufferedImage.TYPE_INT_ARGB);
@@ -116,9 +115,6 @@ public class Map {
                 } // +2，+4，是为了消除间隙。此乃曲线救国也！
             }
             g2d.drawImage(image2, 600 - 2, 520, blockSize + 2, blockSize + 4, null);//画一块砖，Test code by yyt.TODO: Delete this.
-            if(info.end)
-                g2d.drawImage(image3, 560 - 2, 520, blockSize + 2, blockSize + 4, null);//画一个出口，Test code by yyt.TODO: Delete this.
-
             // for (int i = 0; i < 11; i++) {
             //     for (int j = 2; j < 15; j++) {
             //         g2d.drawImage(image2, i * 25-10, 548 - j * 24, null);
@@ -151,36 +147,20 @@ public class Map {
                 if(mario.dash)return;
                 if(mario.vx==0)mario.vx = -mario.walkSpeed;
                 if(!mario.right)mario.faceRight = false;
-                if(mario.jump&&curTime<mario.timeJump+mario.delay&&curTime<mario.timeRight+mario.delay&&!mario.wallRightJump&&!mario.wallLeftJump){
-                    mario.vy = mario.jumpSpeed*0.8;
-                    mario.vx = -mario.walkSpeed;
-                    mario.wallLeftJump = true;
-                }
+                if(mario.jump&&curTime<mario.timeJump+mario.delay)mario.jumpLeft(curTime);
             }
             if (code==KeyEvent.VK_D){
                 mario.right = true;
                 if(mario.dash)return;
                 if(mario.vx==0)mario.vx = mario.walkSpeed;
                 if(!mario.left)mario.faceRight = true;
-                if(mario.jump&&curTime<mario.timeJump+mario.delay&&curTime<mario.timeLeft+mario.delay&&!mario.wallRightJump&&!mario.wallLeftJump){
-                    mario.vy = mario.jumpSpeed*0.8;
-                    mario.vx = mario.walkSpeed;
-                    mario.wallRightJump = true;
-                }
+                if(mario.jump&&curTime<mario.timeJump+mario.delay)mario.jumpRight(curTime);
             }
             if (code==KeyEvent.VK_SPACE){
                 if(mario.dash)return;
                 if((!mario.jump&&!mario.fall)||(mario.fall&&curTime<mario.timeOnGround+mario.delay))mario.vy = mario.jumpSpeed;
-                if(mario.right&&curTime<mario.timeLeft+mario.delay&&!mario.jump&&!mario.wallRightJump&&!mario.wallLeftJump){
-                    mario.vy = mario.jumpSpeed*0.8;
-                    mario.vx = mario.walkSpeed;
-                    mario.wallRightJump = true;
-                }
-                if(mario.left&&curTime<mario.timeRight+mario.delay&&!mario.jump&&!mario.wallLeftJump&&!mario.wallRightJump){
-                    mario.vy = mario.jumpSpeed*0.8;
-                    mario.vx = -mario.walkSpeed;
-                    mario.wallLeftJump = true;
-                }
+                if(mario.right&&!mario.jump)mario.jumpRight(curTime);
+                if(mario.left&&!mario.jump)mario.jumpLeft(curTime);
                 mario.fall = mario.jump = true;
                 mario.timeJump = curTime;
             }
@@ -240,10 +220,8 @@ public class Map {
             int WIDTH,HEIGHT,pixel;
             int[][] digitalMap;
             int rsbX, rsbY;
-            boolean end;
             ArrayList<Enemy> enemyList = new ArrayList<>();
             public PlotInfo(String content) {
-                end = content.equals("end");
                 WIDTH = 800;
                 HEIGHT = 640;
                 pixel = 5;
@@ -261,8 +239,8 @@ public class Map {
                 for (int i = 120; i < 128; i++)
                     for (int j = 104; j < 112;j++)
                         digitalMap[i][j] = 1;
-                if(end)
-                    for(int i = 112;i<120;i++)
+                if(content.equals("end"))
+                    for(int i = 100;i<150;i++)
                         for (int j = 104;j<112;j++)
                             digitalMap[i][j] = 2;
                 // 设置重生点
