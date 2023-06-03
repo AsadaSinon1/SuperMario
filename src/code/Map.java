@@ -130,7 +130,6 @@ public class Map {
             // 完成绘制
             g2d.dispose();
             // 测试到此为止
-
             // 返回合并后的图像
             return bufferedImage;
         }
