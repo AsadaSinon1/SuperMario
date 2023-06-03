@@ -44,7 +44,7 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
         this.pack();
         this.setResizable(false);
         this.setVisible(true);
-        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         thread.setDaemon(true);
         thread.start();
@@ -98,7 +98,7 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
             if(mario.HP > 0)
                 mario.respawn(currPlot.info.rsbX,currPlot.info.rsbY);
             else{
-                plotId = 0;
+                plotId = 1;
                 changePlot();
                 mario.HP=currMap.info.upperHP;
                 mario.respawn(currPlot.info.rsbX, currPlot.info.rsbY);
@@ -120,11 +120,12 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
     }
     // 进入选关界面
     public void changeMap() {
+        thread.interrupt();
+        timer.stop();
         //TODO: SQL操作
 
         // 退出
-        this.setVisible(false);
+        dispose();
         currMap.controller.nextGame();
-        thread.interrupt();
     }
 }

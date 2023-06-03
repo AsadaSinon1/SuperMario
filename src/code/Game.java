@@ -25,6 +25,7 @@ public class Game extends JFrame{
         setPreferredSize(new Dimension(800,640));
         pack();
         setLocation(368,112);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
     }
