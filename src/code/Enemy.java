@@ -5,7 +5,7 @@ import java.awt.*;
 public class Enemy {
     int width, height;//怪物的宽度和高度，目前只支持矩形怪物
     //怪物的长宽应保持为pixel的倍数，这里不用pixelwidth是为了和Mario保持一致
-    int curMapId;//怪物所在的地图 待改：目前版本的怪物只能待在一张地图里
+    Map.Plot currPlot;//怪物所在的场景
     int value;//杀死怪物可以得到的分数
     double positionX, positionY, speedX, speedY;// X坐标，Y坐标，X轴速度，Y轴速度
     double deathTime = -1;//死亡时间
@@ -19,13 +19,13 @@ public class Enemy {
     /**
      * @param x x坐标
      * @param y y坐标
-     * @param mapId 所在地图
+     * @param curr 所在场景
      */
-    Enemy(double x,double y,int mapId)
+    Enemy(double x, double y, Map.Plot curr)
     {
         positionX = x;
         positionY = y;
-        curMapId = mapId;
+        currPlot = curr;
     }
    
     public double getPositionX() {
@@ -65,7 +65,7 @@ public class Enemy {
         deathTime = System.currentTimeMillis();
         speedX = 0;//杀死怪物后，速度变为0
         speedY = 0;//后续可能待改，尸体保持速度掉落比较合理
-        Mario.grade += value;//得分
+        currPlot.mario.grade += value;//得分
         //待改，播放怪物死亡音乐
     }
     /**
@@ -90,7 +90,7 @@ public class Enemy {
      */
     boolean isEntity(int pixelx,int pixely) throws Exception
     {
-        int type=Mario.map[pixelx][pixely];
+        int type=currPlot.mario.map[pixelx][pixely];
         //地图块类型 目前：0为空气，1为墙，2为金币，3为死亡，待改，需要持续更新,更新完应改成enum类
         if(type==1)
             return true;
@@ -185,9 +185,9 @@ class Mushroom extends Enemy {
     final int STEP_TIME = 500;//走一步需要的时间，即贴图切换时间
     final int MUSHROOM_HEIGHT = 30;
     final int MUSHROOM_WIDTH = 30;
-    Mushroom(double x,double y,int mapId)
+    Mushroom(double x, double y, Map.Plot curr)
     {
-        super(x, y, mapId);
+        super(x, y, curr);
         speedX = MUSHROOM_SPEED;
         speedY = 0;
         value = MUSHROOM_VALUE;

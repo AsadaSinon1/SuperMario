@@ -1,33 +1,50 @@
 package src.code;
-import java.awt.*;
-import java.util.*;
-import javax.swing.*;
-import java.awt.event.*;
 
 public class Mario{
-    // 血量
-    int HP;
+    // 屏幕宽度、屏幕高度、像素大小
+    final static int WIDTH = Map.Plot.PlotInfo.screenWidth, HEIGHT = Map.Plot.PlotInfo.screenHeight, pixel = Map.Plot.PlotInfo.pixel;
+    // 血量、分数
+    int HP, grade;
     //走路速度、起跳速度、重力加速度、摩擦系数(值越小效果越明显)
-    final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003,mu = 0.1;
-    //屏幕宽度、屏幕高度、像素大小、人物宽度、人物高度、地图数量、边缘容错度
-    static final int WIDTH = 800, HEIGHT = 640, pixel = 5;
-    final int width = 30,height = 40;
-    static final int delay = 100,dashDelay = 250;
+    final double walkSpeed, jumpSpeed, g, mu;
+    // 人物宽度、人物高度、边缘容错度、冲刺时间
+    final int width, height;
+    final int delay, dashDelay;
+    // 是否有冲刺、蹬墙跳、抓墙能力
+    final boolean canDash, canWallJump, canGrabWall;
+    // 地图（0为空气，1为墙，2为出口，3为死亡）
+    int[][] map = new int[WIDTH/pixel+10][HEIGHT/pixel+10];
+
     //人物x,y坐标、水平速度、垂直速度
-    double x,y,vx,vy;
+    private double x,y,vx,vy;
     //上一帧跑步状态（1，2，3，4）
-    int lastState;
-    // 是否有冲刺、蹬墙跳、抓墙能力 TODO:修改参数
-    boolean canDash = true,canWallJump = true,canGrabWall = true;
+    private int lastState;
     //左方向是否按下、右方向是否按下、是否离地、跳跃键是否按下、是否死亡
-    boolean left,right,fall,jump,death,faceRight,dashAble,dash;
+    private boolean left,right,fall,jump,death,faceRight,dashAble,dash;
     //左侧是否有墙、右侧是否有墙、是否触发左蹬墙跳、是否触发右蹬墙跳
-    boolean wallLeft,wallRight,wallLeftJump,wallRightJump;
-    //分数、地图（0为空气，1为墙，2为出口，3为死亡）
-    static int grade;
-    static int[][] map = new int[WIDTH/pixel+10][HEIGHT/pixel+10];
+    private boolean wallLeft,wallRight,wallLeftJump,wallRightJump;
     //上一次粘在左（右）墙的时刻（用来调整蹬墙容错）、上一次跳跃的时刻、上一次在地面的时刻
-    long timeLeft,timeRight,timeJump,timeOnGround,timeDash;
+    private long timeLeft,timeRight,timeJump,timeOnGround,timeDash;
+
+    Mario(Map.MapInfo info){
+        HP = info.upperHP;
+        grade = info.grade;
+        walkSpeed = info.walkSpeed;
+        jumpSpeed = info.jumpSpeed;
+        g = info.g;
+        mu = info.mu;
+        width = info.width;
+        height = info.height;
+        delay = info.delay;
+        dashDelay = info.dashDelay;
+        canDash = info.canDash;
+        canGrabWall = info.canGrabWall;
+        canWallJump = info.canWallJump;
+    }
+
+
+
+
 
     //设计地图函数，可修改
     void initMap(int [][]map){
@@ -202,4 +219,79 @@ public class Mario{
     }
 
 
+    public double getY() {
+        return y;
+    }
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+    public double getVx() {
+        return vx;
+    }
+    public void setVx(double vx) {
+        this.vx = vx;
+    }
+    public void setRight(boolean right) {
+        this.right = right;
+    }
+    public void setFaceRight(boolean faceRight) {
+        this.faceRight = faceRight;
+    }
+    public boolean isJump() {
+        return jump;
+    }
+    public void setJump(boolean jump) {
+        this.jump = jump;
+    }
+    public long getTimeJump() {
+        return timeJump;
+    }
+    public void setTimeJump(long timeJump) {
+        this.timeJump = timeJump;
+    }
+    public boolean isFall() {
+        return fall;
+    }
+    public void setFall(boolean fall) {
+        this.fall = fall;
+    }
+    public long getTimeOnGround() {
+        return timeOnGround;
+    }
+    public void setVy(double vy) {
+        this.vy = vy;
+    }
+    public boolean isDashAble() {
+        return dashAble;
+    }
+    public void setDashAble(boolean dashAble) {
+        this.dashAble = dashAble;
+    }
+    public void setDash(boolean dash) {
+        this.dash = dash;
+    }
+    public boolean isDash() {
+        return dash;
+    }
+    public void setTimeDash(long timeDash) {
+        this.timeDash = timeDash;
+    }
+    public boolean isRight() {
+        return right;
+    }
+    public boolean isLeft() {
+        return left;
+    }
+    public void setWallLeftJump(boolean wallLeftJump) {
+        this.wallLeftJump = wallLeftJump;
+    }
+    public void setWallRightJump(boolean wallRightJump) {
+        this.wallRightJump = wallRightJump;
+    }
+    public double getX() {
+        return x;
+    }
+    public boolean isDeath() {
+        return death;
+    }
 }

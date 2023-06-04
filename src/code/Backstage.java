@@ -25,20 +25,20 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
     int plotId = 1;
     // 后台当前场景
     Map.Plot currPlot;
-    Mario mario = new Mario();
+    Mario mario;
 
 
     Backstage(Map currMap) {
         this.currMap = currMap;
+        mario = new Mario(currMap.info);
         // 初始化Plot（第一个场景）
         changePlot();
-        mario.HP=currMap.info.upperHP;
         mario.respawn(currPlot.info.rsbX, currPlot.info.rsbY);
 
         currPlot.setPreferredSize(new Dimension(800,640));
 
-        int showWidth = (Toolkit.getDefaultToolkit().getScreenSize().width - currPlot.screenWidth)/2;
-        int showHeight = (Toolkit.getDefaultToolkit().getScreenSize().height - currPlot.screenHeight)/2;
+        int showWidth = (Toolkit.getDefaultToolkit().getScreenSize().width - Map.Plot.PlotInfo.screenWidth)/2;
+        int showHeight = (Toolkit.getDefaultToolkit().getScreenSize().height - Map.Plot.PlotInfo.screenHeight)/2;
         this.setLocation(showWidth,showHeight);
 
         this.pack();
@@ -76,16 +76,16 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
         timer.start();
     }
 
-    // 刷新起始时间
-    long curTime,prevTime;
+    private long prevTime;
 
     // repaint时间间隔
-    int interval=0;
+    private int interval=0;
     // 计时器周期运行函数
     @Override
     public void actionPerformed(ActionEvent ae) {
 
-        curTime = System.currentTimeMillis();
+        // 刷新起始时间
+        long curTime = System.currentTimeMillis();
 
         //更新Enemy状态
         for(Enemy enemy:currPlot.enemyList)
@@ -108,12 +108,12 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
         } catch (MyException.NextMap e) {
             plotId++;
             changePlot();
-            mario.respawn(0, mario.y);
+            mario.respawn(0, mario.getY());
         }
 
 
         // 刷新JPanel
-        if(interval==0) currPlot.paintImmediately(0,0, currPlot.screenWidth,currPlot.screenHeight);
+        if(interval==0) currPlot.paintImmediately(0,0, Map.Plot.PlotInfo.screenWidth, Map.Plot.PlotInfo.screenHeight);
         interval = (interval+1)%2;
         prevTime = curTime;
 

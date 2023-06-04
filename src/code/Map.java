@@ -2,7 +2,6 @@ package src.code;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -27,6 +26,7 @@ public class Map {
     Map(int mapId,Game controller){
         this.controller=controller;
         this.mapId = mapId;
+        // 读取地图信息
         try {
             parseMap();
         } catch (IOException e) {
@@ -37,6 +37,7 @@ public class Map {
         for(int i = 0; i<this.info.plotNum; i++)
             plotPool.add(new Plot("src/map/level"+mapId+"/plots/plot"+ (i + 1) +".plotinfo"));
     }
+    // 解析地图文件
     public void parseMap() throws IOException {
         FileInputStream fis = new FileInputStream("src/map/level"+mapId+"/level"+mapId+".mapinfo");
         // 读取文件内容
@@ -53,11 +54,19 @@ public class Map {
      */
     class MapInfo {
         //血量上限
-        int upperHP;
+        final int upperHP;// TODO
         // 当前成绩
-        int grade;
+        int grade;// TODO
         // 场景数量
-        int plotNum;
+        final int plotNum;// TODO
+        //走路速度、起跳速度、重力加速度、摩擦系数(值越小效果越明显)
+        final double walkSpeed = 0.3,jumpSpeed = 0.6,g = 0.003,mu = 0.1;
+        // 人物宽度、人物高度、边缘容错度、冲刺时间
+        final int width = 30,height = 40;
+        final int delay = 100,dashDelay = 250;
+        // 是否有冲刺、蹬墙跳、抓墙能力
+        final boolean canDash = true,canWallJump = true,canGrabWall = true;
+
         MapInfo(String content){
             upperHP = 3;
             grade = 0;
@@ -75,11 +84,6 @@ public class Map {
         Mario mario;
         // 敌人列表
         ArrayList<Enemy> enemyList = new ArrayList<>();
-
-        // 画图参数。请务必在这里更改，不要把数字写死在程序里！
-        public int screenHeight = 640; // 窗口高度
-        public int screenWidth = 800; // 窗口宽度
-        public int blockSize = 40; // 方块的边长
 
         public Plot(String filename) {
             this.filename = filename;
@@ -109,52 +113,51 @@ public class Map {
         public Image paintPlot() {
             // TODO:读取info
 
+
+            //yyt:这里不要用原图大小，要用我们期待的大小
+            BufferedImage bufferedImage = new BufferedImage(PlotInfo.screenWidth, PlotInfo.screenHeight, BufferedImage.TYPE_INT_ARGB);
+
             // 以下均为测试
             // 加载两张照片
             Image image1 = new ImageIcon("src/image/bgMountainCloud4.jpeg").getImage();
             Image image2 = new ImageIcon("src/image/boxBrick.png").getImage();
             Image image3 = new ImageIcon("src/image/boxQuestion.png").getImage();
             Image image4 = new ImageIcon("src/image/goldCoin.png").getImage(); // TODO:我们需要heart
-            // 创建一个缓冲图像
-            // BufferedImage bufferedImage = new BufferedImage(image1.getWidth(null), image1.getHeight(null),
-            //         BufferedImage.TYPE_INT_ARGB);
-            //yyt:这里不要用原图大小，要用我们期待的大小
-            BufferedImage bufferedImage = new BufferedImage(this.screenWidth, this.screenHeight, BufferedImage.TYPE_INT_ARGB);
 
             // 获取缓冲图像的Graphics2D对象
             Graphics2D g2d = bufferedImage.createGraphics();
             // 绘制背景照d片
-            g2d.drawImage(image1, 0, 0, this.screenWidth, this.screenHeight, null); // Changed by yyt.
+            g2d.drawImage(image1, 0, 0, PlotInfo.screenWidth, PlotInfo.screenHeight, null); // Changed by yyt.
 
 
             // 绘制血量
             for (int j = 0; j < mario.HP; j++) {
                 g2d.drawImage(image4, j * 40 - 2, 0,
-                        this.blockSize, this.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
+                        PlotInfo.blockSize, PlotInfo.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
             }
             // 绘制砖块照片
             for (int i = 0; i < 20; i++) {
                 if(info.death&&(i==6||i==7)) continue;
                 for (int j = 1; j < 3; j++) {
-                    g2d.drawImage(image2, i * 40 - 2, this.screenHeight - j * this.blockSize,
-                            this.blockSize + 2, this.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
+                    g2d.drawImage(image2, i * 40 - 2, PlotInfo.screenHeight - j * PlotInfo.blockSize,
+                            PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
                 } // +2，+4，是为了消除间隙。此乃曲线救国也！
             }
 
             if(!info.end&&!info.death){
                 for (int j = 3; j < 12; j++) {
-                    g2d.drawImage(image2, -2, this.screenHeight - j * this.blockSize,
-                            this.blockSize + 2, this.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
+                    g2d.drawImage(image2, -2, PlotInfo.screenHeight - j * PlotInfo.blockSize,
+                            PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
                 }
                 for (int j = 3; j < 12; j++) {
-                    g2d.drawImage(image2, 160 - 2, this.screenHeight - j * this.blockSize,
-                            this.blockSize + 2, this.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
+                    g2d.drawImage(image2, 160 - 2, PlotInfo.screenHeight - j * PlotInfo.blockSize,
+                            PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
                 }
             }
 
-            g2d.drawImage(image2, 600 - 2, 520, blockSize + 2, blockSize + 4, null);//画一块砖，Test code by yyt.TODO: Delete this.
+            g2d.drawImage(image2, 600 - 2, 520, PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);//画一块砖，Test code by yyt.TODO: Delete this.
             if(info.end)
-                g2d.drawImage(image3, 560 - 2, 520, blockSize + 2, blockSize + 4, null);//画一个出口，Test code by yyt.TODO: Delete this.
+                g2d.drawImage(image3, 560 - 2, 520, PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);//画一个出口，Test code by yyt.TODO: Delete this.
 
             // for (int i = 0; i < 11; i++) {
             //     for (int j = 2; j < 15; j++) {
@@ -179,57 +182,58 @@ public class Map {
         }
         @Override
         public void keyPressed(KeyEvent e) {
-            if(mario.death)return;
+            if(mario.isDeath())return;
             int code = e.getKeyCode();
             long curTime = System.currentTimeMillis();
             if (code==KeyEvent.VK_A){
-                mario.left = true;
-                if(mario.dash)return;
-                if(mario.vx==0)mario.vx = -mario.walkSpeed;
-                if(!mario.right)mario.faceRight = false;
-                if(mario.jump&&curTime<mario.timeJump+mario.delay)mario.jumpLeft(curTime);
+                mario.setLeft(true);
+                if(mario.isDash())return;
+                if(mario.getVx()==0)mario.setVx(-mario.walkSpeed);
+                if(!mario.isRight())mario.setFaceRight(false);
+                if(mario.isJump()&&curTime<mario.getTimeJump()+mario.delay)mario.jumpLeft(curTime);
             }
             if (code==KeyEvent.VK_D){
-                mario.right = true;
-                if(mario.dash)return;
-                if(mario.vx==0)mario.vx = mario.walkSpeed;
-                if(!mario.left)mario.faceRight = true;
-                if(mario.jump&&curTime<mario.timeJump+mario.delay)mario.jumpRight(curTime);
+                mario.setRight(true);
+                if(mario.isDash())return;
+                if(mario.getVx() ==0) mario.setVx(mario.walkSpeed);
+                if(!mario.isLeft()) mario.setFaceRight(true);
+                if(mario.isJump()&&curTime< mario.getTimeJump() +mario.delay)mario.jumpRight(curTime);
             }
             if (code==KeyEvent.VK_SPACE){
-                if(mario.dash)return;
-                if((!mario.jump&&!mario.fall)||(mario.fall&&curTime<mario.timeOnGround+mario.delay))mario.vy = mario.jumpSpeed;
-                if(mario.right&&!mario.jump)mario.jumpRight(curTime);
-                if(mario.left&&!mario.jump)mario.jumpLeft(curTime);
-                mario.fall = mario.jump = true;
-                mario.timeJump = curTime;
+                if(mario.isDash())return;
+                if((!mario.isJump()&&!mario.isFall())||(mario.isFall()&&curTime<mario.getTimeOnGround()+mario.delay))mario.setVy(mario.jumpSpeed);
+                if(mario.isRight()&&!mario.isJump())mario.jumpRight(curTime);
+                if(mario.isLeft()&&!mario.isJump())mario.jumpLeft(curTime);
+                mario.setFall(true);
+                mario.setJump(true);
+                mario.setTimeJump(curTime);
             }
             if(code==KeyEvent.VK_L){
-                if(!mario.dashAble)return;
-                mario.dash = true;
-                mario.dashAble = false;
-                mario.timeDash = curTime;
+                if(!mario.isDashAble())return;
+                mario.setDash(true);
+                mario.setDashAble(false);
+                mario.setTimeDash(curTime);
             }
         }
         @Override
         public void keyReleased(KeyEvent e) {
-            if(mario.death)return;
+            if(mario.isDeath())return;
             if (e.getKeyCode() == KeyEvent.VK_A){
-                mario.left = false;
-                if(mario.dash)return;
-                mario.vx = mario.right?mario.walkSpeed:0;
-                if(mario.right)mario.faceRight = true;
+                mario.setLeft(false);
+                if(mario.isDash())return;
+                mario.setVx(mario.isRight() ? mario.walkSpeed : 0);
+                if(mario.isRight()) mario.setFaceRight(true);
             }
             if (e.getKeyCode() == KeyEvent.VK_D){
-                mario.right = false;
-                if(mario.dash)return;
-                mario.vx = mario.left?-mario.walkSpeed:0;
-                if(mario.left)mario.faceRight = false;
+                mario.setRight(false);
+                if(mario.isDash())return;
+                mario.setVx(mario.isLeft() ? -mario.walkSpeed : 0);
+                if(mario.isLeft()) mario.setFaceRight(false);
             }
             if (e.getKeyCode() == KeyEvent.VK_SPACE){
-                mario.jump = false;
-                mario.wallLeftJump = false;
-                mario.wallRightJump = false;
+                mario.setJump(false);
+                mario.setWallLeftJump(false);
+                mario.setWallRightJump(false);
             }
         }
 
@@ -240,16 +244,16 @@ public class Map {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             // 加载背景图像
-            //Image backgroundImage = currPlot.paintPlot().getScaledInstance(800, 640, Image.SCALE_SMOOTH);//调整大小
             Image backgroundImage = this.paintPlot();
-            // 绘制图像
+            // 绘制背景地图
             g.drawImage(backgroundImage, 0, 0,
-                    this.screenWidth, this.screenHeight, null);
+                    PlotInfo.screenWidth, PlotInfo.screenHeight, null);
+            // 绘制enemy图像
             for(Enemy enemy:enemyList)
                 g.drawImage(enemy.getCurImage(), Mario.pixelate(enemy.getPositionX()),
                         Mario.pixelate(enemy.getPositionY()), enemy.width, enemy.height, null);
-
-            g.drawImage(Toolkit.getDefaultToolkit().getImage("src/image/mario"+mario.findDirection()+".png"), mario.pixelate(mario.x), mario.pixelate(mario.y), mario.width, mario.height,null);//        g.setColor(Color.BLACK);
+            // 绘制Mario图像
+            g.drawImage(Toolkit.getDefaultToolkit().getImage("src/image/mario"+mario.findDirection()+".png"), Mario.pixelate(mario.getX()), Mario.pixelate(mario.getY()), mario.width, mario.height,null);//        g.setColor(Color.BLACK);
         }
 
 
@@ -257,25 +261,27 @@ public class Map {
          * plot的内部类，plot的数据结构（很重要）
          */
         class PlotInfo {
-            int WIDTH,HEIGHT,pixel;
+            // 画图参数。请务必在这里更改，不要把数字写死在程序里！
+            // 窗口宽度,窗口高度,方块的边长,像素大小
+            final static int screenWidth = 800, screenHeight = 640, blockSize = 40, pixel = 5;
             int[][] digitalMap;
             int rsbX, rsbY;
-            // for test
-            boolean end,death;
             ArrayList<Enemy> enemyList = new ArrayList<>();
+
+            boolean end,death;
             public PlotInfo(String content) {
-                end = content.equals("end");
-                death = content.equals("death");
-                WIDTH = 800;
-                HEIGHT = 640;
-                pixel = 5;
-                digitalMap = new int[WIDTH/pixel+10][HEIGHT/pixel+10];;
-                // 设计敌人
-                Mushroom mushroom1 = new Mushroom(500, 0, 0);
-                Mushroom mushroom2 = new Mushroom(70, 200, 0);
+                digitalMap = new int[screenWidth/pixel+10][screenHeight/pixel+10];
+                // TODO:设置重生点
+                rsbX = rsbY = 0;
+
+                // TODO:设计敌人
+                Mushroom mushroom1 = new Mushroom(500, 0, Plot.this);
+                Mushroom mushroom2 = new Mushroom(70, 200, Plot.this);
                 enemyList.add(mushroom1);
                 enemyList.add(mushroom2);
-                // 设计地图
+                // TODO:设计地图
+                end = content.equals("end");
+                death = content.equals("death");
                 for (int i = 0; i < 160; i++)
                     for (int j = 112; j < 128; j++)//yyt：这里应该是112 不是113？砖是40x40（8pixelx8pixel)
                         digitalMap[i][j] = 1;
@@ -306,8 +312,7 @@ public class Map {
                         for (int j = 112;j<120;j++)
                             digitalMap[i][j] = 0;
                 }
-                // 设置重生点
-                rsbX = rsbY = 0;
+
             }
         }
     }
