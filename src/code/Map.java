@@ -154,7 +154,8 @@ public class Map {
                             PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
                 }
             }
-
+            if(info.death)
+                g2d.drawImage(image2, 320 - 2, 520, PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
             g2d.drawImage(image2, 600 - 2, 520, PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);//画一块砖，Test code by yyt.TODO: Delete this.
             if(info.end)
                 g2d.drawImage(image3, 560 - 2, 520, PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);//画一个出口，Test code by yyt.TODO: Delete this.
@@ -276,7 +277,7 @@ public class Map {
 
                 // TODO:设计敌人
                 Mushroom mushroom1 = new Mushroom(500, 0, Plot.this);
-                Mushroom mushroom2 = new Mushroom(70, 200, Plot.this);
+                Mushroom mushroom2 = new Mushroom(300, 200, Plot.this);
                 enemyList.add(mushroom1);
                 enemyList.add(mushroom2);
                 // TODO:设计地图
@@ -311,6 +312,9 @@ public class Map {
                     for(int i = 48;i<64;i++)
                         for (int j = 112;j<120;j++)
                             digitalMap[i][j] = 0;
+                    for(int i = 64;i<72;i++)
+                        for (int j = 104;j<112;j++)
+                            digitalMap[i][j] = 1;
                 }
 
             }
