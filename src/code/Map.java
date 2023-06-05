@@ -286,8 +286,10 @@ public class Map {
                 // TODO:设计敌人
                 Mushroom mushroom1 = new Mushroom(500, 0, Plot.this);
                 Mushroom mushroom2 = new Mushroom(300, 200, Plot.this);
+                Turtle turtle1 = new Turtle(280, 50, Plot.this);
                 enemyList.add(mushroom1);
                 enemyList.add(mushroom2);
+                enemyList.add(turtle1);
                 // TODO:设计地图
                 end = content.equals("end");
                 death = content.equals("death");

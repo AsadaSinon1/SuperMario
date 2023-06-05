@@ -348,3 +348,115 @@ class Mushroom extends Enemy {
         //dt改成long类型会好一些，这里为了和Mario保持一致
     }    
 }
+
+class Turtle extends Enemy {
+    int step;//当前运动状态对应的贴图，0 or 1
+    final double TURTLE_RIGHT_SPEED = 0.15;//乌龟向右走路速度
+    final double TURTLE_LEFT_SPEED = -0.35;//乌龟向左走路速度
+    final int TURTLE_VALUE = 2000;//蘑菇的价值分数
+    final int REMAIN_TIME = 3000;//蘑菇的尸体保留时间
+    final int STEP_TIME = 500;//走一步需要的时间，即贴图切换时间
+    final int TURTLE_HEIGHT = 50;
+    final int TURTLE_WIDTH = 30;
+    
+    Turtle(double x, double y, Map.Plot curr)
+    {
+        super(x, y, curr);
+        speedX = TURTLE_RIGHT_SPEED;
+        speedY = 0;
+        value = TURTLE_VALUE;
+        height = TURTLE_HEIGHT;
+        width = TURTLE_WIDTH;
+        img = new Image[5];
+        img[0] = Toolkit.getDefaultToolkit().getImage("src/image/turtleLeft0.png");
+        img[1] = Toolkit.getDefaultToolkit().getImage("src/image/turtleLeft1.png");
+        img[2] = Toolkit.getDefaultToolkit().getImage("src/image/turtleRight0.png");
+        img[3] = Toolkit.getDefaultToolkit().getImage("src/image/turtleRight1.png");
+        img[4] = Toolkit.getDefaultToolkit().getImage("src/image/turtleRemain.png");//Remain状态 龟壳
+        step = 0;
+    }
+    @Override
+    public Image getCurImage() {
+        if (lifeState == LifeState.DEAD)
+            return defaultImg;
+        if (lifeState == LifeState.REMAIN)
+            return img[4];
+        int index = step;
+        if(speedX>0)//朝右边
+            index += 2;
+        return img[index];
+    }
+    @Override
+    void update(double dt, long curTime) {
+        
+        //判断状态
+        if (lifeState == LifeState.DEAD)
+            return;
+        if(lifeState==LifeState.REMAIN)//尸体停留超过时间了
+        {
+            if (curTime - deathTime >= REMAIN_TIME)
+            {
+                lifeState = LifeState.DEAD;
+            }          
+            return;
+        }
+
+        boolean killMario = false;
+        //若存活
+        //检查碰撞地图实体
+        //修正速度：若左、右、上碰到实体，反弹，速度变为等大方向相反，若下碰到实体，Vy变为0，Vx不变       
+        for (double t = 0; t < dt; t += DELTA_T)
+        {
+            if (checkBounceMario(Edge.UPPER)&&currPlot.mario.getVy()<0&&!currPlot.mario.isDash())//上碰撞马里奥（有向下速度的），enemy死亡
+            {
+                try {
+                    death();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                currPlot.mario.setStep(true);
+                //Mario应该被反弹起来，不然看着很奇怪
+                currPlot.mario.setVy(currPlot.mario.jumpSpeed);//注意这里是正的，正速度才是向上跳
+                return;
+            }
+
+            //与马里奥碰撞
+            if (checkBounceMario(Edge.LEFT)||checkBounceMario(Edge.LOWER)||checkBounceMario(Edge.RIGHT))
+                killMario = true;
+            if (checkBounce(Edge.LOWER))//下碰撞
+            {
+                speedY = 0;
+                isfall = false;
+            } else {
+                speedY += G * DELTA_T;
+                isfall = true;
+            }
+            
+            if (speedY<0&&checkBounce(Edge.UPPER))//上碰撞
+            {
+                speedY = -speedY;
+            }
+            positionY = positionY + DELTA_T * speedY;
+
+            if ((speedX<0)&&checkBounce(Edge.LEFT))//左碰撞
+            {
+                speedX = TURTLE_RIGHT_SPEED;//往右低速
+            }
+            if ((speedX > 0) && checkBounce(Edge.RIGHT))//右碰撞
+            {
+                speedX = TURTLE_LEFT_SPEED;//往左高速
+            }
+            positionX = positionX + DELTA_T * speedX;
+        }
+
+        if (killMario)
+            currPlot.mario.killed();
+        //更新step 
+        if (walkingTimer >= STEP_TIME)
+            step = 1;
+        else
+            step = 0;
+        walkingTimer = (walkingTimer + (long)dt) % (STEP_TIME*2);//这里强制类型转换没问题但是不美观
+        //dt改成long类型会好一些，这里为了和Mario保持一致
+    }    
+}
