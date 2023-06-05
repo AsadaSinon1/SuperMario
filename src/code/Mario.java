@@ -214,7 +214,7 @@ public class Mario{
                 }else vx = 0;
             }
         }
-        if(step)System.out.println(Math.random());
+//        if(step)System.out.println(Math.random());
     }
 
 

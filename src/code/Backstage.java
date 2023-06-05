@@ -42,7 +42,7 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
         this.pack();
         this.setResizable(false);
         this.setVisible(true);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
         thread.setDaemon(true);
         thread.start();

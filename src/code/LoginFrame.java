@@ -208,7 +208,7 @@ public class LoginFrame extends JFrame {
                             found = FileOperation.searchFile("src/save",inputText);
                             if(found){
                                 boolean right = (SQLConnection.SearchPassword(inputText).equals(new String(passwordField.getPassword())));
-                                right = true;//TODO: delete this
+//                                right = true;//TODO: delete this
                                 if(right){
                                     dispose();
                                     GameStartFrame frame = new GameStartFrame();

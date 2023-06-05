@@ -121,7 +121,7 @@ public class Map {
             // 加载两张照片
             Image image1 = new ImageIcon("src/image/bgMountainCloud4.jpeg").getImage();
             Image image2 = new ImageIcon("src/image/boxBrick.png").getImage();
-            Image image3 = new ImageIcon("src/image/boxQuestion.png").getImage();
+            Image image3 = new ImageIcon("src/image/castle.png").getImage();
             Image image4 = new ImageIcon("src/image/heart.png").getImage(); 
 
             // 获取缓冲图像的Graphics2D对象
@@ -158,7 +158,11 @@ public class Map {
                 g2d.drawImage(image2, 320 - 2, 520, PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);// Test code by yyt. TODO: Delete this.
             g2d.drawImage(image2, 600 - 2, 520, PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);//画一块砖，Test code by yyt.TODO: Delete this.
             if(info.end)
-                g2d.drawImage(image3, 560 - 2, 520, PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);//画一个出口，Test code by yyt.TODO: Delete this.
+            {
+                g2d.drawImage(image3, 480 - 2, 440, 3*PlotInfo.blockSize + 2, 3*PlotInfo.blockSize + 4, null);//画一个出口，Test code by yyt.TODO: Delete this.
+                for (int j = 1; j < 17; j++)
+                    g2d.drawImage(image2, 600 - 2, PlotInfo.screenHeight - j * PlotInfo.blockSize, PlotInfo.blockSize + 2, PlotInfo.blockSize + 4, null);//画一块砖，Test code by yyt.TODO: Delete this.
+            }
 
             // for (int i = 0; i < 11; i++) {
             //     for (int j = 2; j < 15; j++) {
@@ -305,9 +309,14 @@ public class Map {
                 }
 
                 if(end)
-                    for(int i = 112;i<120;i++)
+                {
+                    for(int i = 104;i<112;i++)
                         for (int j = 104;j<112;j++)
                             digitalMap[i][j] = 2;
+                    for (int i = 120; i < 128; i++)
+                        for (int j = 0; j < 104;j++)
+                            digitalMap[i][j] = 1;
+                }
                 if(death)
                 {
                     for(int i = 48;i<64;i++)
