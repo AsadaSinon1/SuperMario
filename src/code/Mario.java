@@ -291,7 +291,15 @@ public class Mario{
     public double getX() {
         return x;
     }
+
     public boolean isDeath() {
         return death;
+    }
+
+    public double getVy() {
+        return vy;
+    }
+    public void setY(double y) {
+        this.y = y;
     }
 }

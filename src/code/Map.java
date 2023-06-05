@@ -122,11 +122,11 @@ public class Map {
             Image image1 = new ImageIcon("src/image/bgMountainCloud4.jpeg").getImage();
             Image image2 = new ImageIcon("src/image/boxBrick.png").getImage();
             Image image3 = new ImageIcon("src/image/boxQuestion.png").getImage();
-            Image image4 = new ImageIcon("src/image/goldCoin.png").getImage(); // TODO:我们需要heart
+            Image image4 = new ImageIcon("src/image/heart.png").getImage(); 
 
             // 获取缓冲图像的Graphics2D对象
             Graphics2D g2d = bufferedImage.createGraphics();
-            // 绘制背景照d片
+            // 绘制背景照片
             g2d.drawImage(image1, 0, 0, PlotInfo.screenWidth, PlotInfo.screenHeight, null); // Changed by yyt.
 
 
@@ -266,7 +266,7 @@ public class Map {
             // 窗口宽度,窗口高度,方块的边长,像素大小
             final static int screenWidth = 800, screenHeight = 640, blockSize = 40, pixel = 5;
             int[][] digitalMap;
-            int rsbX, rsbY;
+            int rsbX, rsbY;//重生点坐标
             ArrayList<Enemy> enemyList = new ArrayList<>();
 
             boolean end,death;

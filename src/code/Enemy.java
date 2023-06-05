@@ -13,9 +13,10 @@ public class Enemy {
     LifeState lifeState = LifeState.ALIVE;//生命状态
     final double DELTA_T = 0.1;//以0.1ms为单位，更新位置和速度
     final double G = 0.003;//重力加速度
+    final double REBOUND_SPEED = 1.2;//反弹马里奥的速度
     long walkingTimer=0;//走路计时器
     Image[] img;//怪物的所有贴图
-    Image defaultImg = Toolkit.getDefaultToolkit().getImage("src/image/totalAlpha.png");//待改 完全透明图像 
+    Image defaultImg = Toolkit.getDefaultToolkit().getImage("src/image/totalAlpha.png");//完全透明图像 
     /**
      * @param x x坐标
      * @param y y坐标
@@ -90,76 +91,146 @@ public class Enemy {
      */
     boolean isEntity(int pixelx,int pixely) throws Exception
     {
-        int type=currPlot.mario.map[pixelx][pixely];
+        int type = currPlot.mario.map[pixelx][pixely];
         //地图块类型 目前：0为空气，1为墙，2为金币，3为死亡，待改，需要持续更新,更新完应改成enum类
-        if(type==1)
+        if (type == 1)
             return true;
-        if(type==0||type==2||type==3)
+        if (type == 0 || type == 2 || type == 3)
             return false;
         throw new Exception("isEntity:未知地图块类型" + type);
-    }  
+    }
+    boolean isMario(int pixelx,int pixely)
+    {
+        int xStart = Mario.pixelate(currPlot.mario.getX()) / Mario.pixel;
+        int xEnd = xStart + currPlot.mario.width/ Mario.pixel;
+        int yStart = Mario.pixelate(currPlot.mario.getY()) / Mario.pixel;
+        int yEnd = yStart + currPlot.mario.height/ Mario.pixel;
+        return (xStart <= pixelx && pixelx < xEnd && yStart <= pixely && pixely < yEnd);
+    }
+
+    
     /**
-     * 检查实体碰撞
-     * @param edge 检查哪个边缘 
-     * @return
-     * @throws Exception
+     * 检测碰撞
+     * @param edge 哪个边缘
      */
     boolean checkBounce(Edge edge)
-    {        
+    {
         positionCorrection();
-        int pixelX = Mario.pixelate(positionX)/Mario.pixel;//借用一下算像素的函数
+
+        int pixelX = Mario.pixelate(positionX) / Mario.pixel;//借用一下算像素的函数
         int pixelY = Mario.pixelate(positionY) / Mario.pixel;
         int pixelH = height / Mario.pixel;
         int pixelW = width / Mario.pixel;
-        int pixelXEnd=-1, pixelYEnd=-1, pixelXStart=-1, pixelYStart=-1;//检测范围
+        int pixelXEnd = -1, pixelYEnd = -1, pixelXStart = -1, pixelYStart = -1;//检测范围
         int edgeLen = 1;//边缘的宽度    
-        switch(edge)//尽量不要改这里的代码
+        switch (edge)//尽量不要改这里的代码
         {
             case UPPER:
-                if(pixelX==0)
+                if (pixelY == 0)
                     return true;
                 pixelXEnd = pixelX + pixelW;
-                pixelYEnd = pixelY - edgeLen;
+                pixelYEnd = pixelY;
                 pixelXStart = pixelX;
-                pixelYStart = pixelY;
+                pixelYStart = pixelY-edgeLen;
                 break;
             case LOWER:
-                if(pixelY>=Mario.HEIGHT/Mario.pixel-pixelH)
+                if (pixelY >= Mario.HEIGHT / Mario.pixel - pixelH)
                     return true;
                 pixelXEnd = pixelX + pixelW;
-                pixelYEnd = pixelY + pixelH+edgeLen;
+                pixelYEnd = pixelY + pixelH + edgeLen;
                 pixelXStart = pixelX;
                 pixelYStart = pixelY + pixelH;
                 break;
             case LEFT:
-                if(pixelX==0)
+                if (pixelX == 0)
                     return true;
-                pixelXEnd = pixelX ;
+                pixelXEnd = pixelX;
                 pixelYEnd = pixelY + pixelH;
-                pixelXStart = pixelX-edgeLen;
+                pixelXStart = pixelX - edgeLen;
                 pixelYStart = pixelY;
                 break;
             case RIGHT:
-                if(pixelX>=Mario.WIDTH/Mario.pixel-pixelW)
+                if (pixelX >= Mario.WIDTH / Mario.pixel - pixelW)
                     return true;
-                pixelXEnd = pixelX + pixelW+edgeLen;
+                pixelXEnd = pixelX + pixelW + edgeLen;
                 pixelYEnd = pixelY + pixelH;
-                pixelXStart = pixelX+ pixelW;
+                pixelXStart = pixelX + pixelW;
                 pixelYStart = pixelY;
-                break;           
+                break;
             default:
                 break;
         }
         for (int i = pixelXStart; i < pixelXEnd; i++)
-            for (int j = pixelYStart; j < pixelYEnd; j++)
-            {
-                try{
-                    if(isEntity(i, j))
+            for (int j = pixelYStart; j < pixelYEnd; j++) {
+
+                try {
+                    if (isEntity(i, j)) {
                         return true;
-                }catch(Exception e){e.printStackTrace();}               
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         return false;
     }
+
+    boolean checkBounceMario(Edge edge)
+    {
+        positionCorrection();
+
+        int pixelX = Mario.pixelate(positionX) / Mario.pixel;//借用一下算像素的函数
+        int pixelY = Mario.pixelate(positionY) / Mario.pixel;
+        int pixelH = height / Mario.pixel;
+        int pixelW = width / Mario.pixel;
+        int pixelXEnd = -1, pixelYEnd = -1, pixelXStart = -1, pixelYStart = -1;//检测范围
+        int edgeLen = 1;//边缘的宽度    
+        switch (edge)//尽量不要改这里的代码
+        {
+            case UPPER:            
+                pixelXEnd = pixelX + pixelW;
+                pixelYEnd = pixelY;
+                pixelXStart = pixelX;
+                pixelYStart = pixelY - edgeLen;
+                break;
+            case LOWER:               
+                pixelXEnd = pixelX + pixelW;
+                pixelYEnd = pixelY + pixelH + edgeLen;
+                pixelXStart = pixelX;
+                pixelYStart = pixelY + pixelH;
+                break;
+            case LEFT:        
+                pixelXEnd = pixelX;
+                pixelYEnd = pixelY + pixelH;
+                pixelXStart = pixelX - edgeLen;
+                pixelYStart = pixelY;
+                break;
+            case RIGHT:
+                pixelXEnd = pixelX + pixelW + edgeLen;
+                pixelYEnd = pixelY + pixelH;
+                pixelXStart = pixelX + pixelW;
+                pixelYStart = pixelY;
+                break;
+            default:
+                break;
+        }
+        for (int i = pixelXStart; i < pixelXEnd; i++)
+            for (int j = pixelYStart; j < pixelYEnd; j++) {
+
+                try {
+                    if (isMario(i, j)) {
+                        return true;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        return false;
+    }
+    
 };
 
 
@@ -185,6 +256,7 @@ class Mushroom extends Enemy {
     final int STEP_TIME = 500;//走一步需要的时间，即贴图切换时间
     final int MUSHROOM_HEIGHT = 30;
     final int MUSHROOM_WIDTH = 30;
+    
     Mushroom(double x, double y, Map.Plot curr)
     {
         super(x, y, curr);
@@ -213,9 +285,12 @@ class Mushroom extends Enemy {
         //判断状态
         if (lifeState == LifeState.DEAD)
             return;
-        if(lifeState==LifeState.REMAIN&&curTime-deathTime>=REMAIN_TIME)//尸体停留超过2s了
+        if(lifeState==LifeState.REMAIN)//尸体停留超过2s了
         {
-            lifeState = LifeState.DEAD;
+            if (curTime - deathTime >= REMAIN_TIME)
+            {
+                lifeState = LifeState.DEAD;
+            }          
             return;
         }
 
@@ -224,6 +299,26 @@ class Mushroom extends Enemy {
         //修正速度：若左、右、上碰到实体，反弹，速度变为等大方向相反，若下碰到实体，Vy变为0，Vx不变       
         for (double t = 0; t < dt; t += DELTA_T)
         {
+            if (checkBounceMario(Edge.UPPER)&&currPlot.mario.getVy()<0)//上碰撞马里奥（有向下速度的），enemy死亡
+            {
+                try {
+                    death();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //Mario应该被反弹起来，不然看着很奇怪
+                currPlot.mario.setVy(REBOUND_SPEED);//注意这里是正的，正速度才是向上跳              
+                return;
+            }
+
+            //TODO:修改这里
+            //处理马里奥碰撞后的HP，重生等
+            if (checkBounceMario(Edge.LEFT)||checkBounceMario(Edge.LOWER)||checkBounceMario(Edge.RIGHT))
+            {
+                currPlot.mario.HP -= 1;
+                currPlot.mario.respawn(currPlot.info.rsbX, currPlot.info.rsbY);
+            }
+
             if (checkBounce(Edge.LOWER))//下碰撞
             {
                 speedY = 0;
@@ -232,6 +327,7 @@ class Mushroom extends Enemy {
                 speedY += G * DELTA_T;
                 isfall = true;
             }
+            
             if (speedY<0&&checkBounce(Edge.UPPER))//上碰撞
             {
                 speedY = -speedY;

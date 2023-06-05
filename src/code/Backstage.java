@@ -90,7 +90,7 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
         //更新Enemy状态
         for(Enemy enemy:currPlot.enemyList)
             enemy.update(curTime - prevTime, curTime);
-
+        
         //更新Mario状态
         try {
             mario.update(curTime - prevTime, curTime);
