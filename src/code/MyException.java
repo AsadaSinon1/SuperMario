@@ -1,8 +1,8 @@
 package src.code;
 
 public class MyException{
-    static class NextMap extends Exception{
-        NextMap(){
+    static class NextPlot extends Exception{
+        NextPlot(){
             super();
         }
     }
@@ -11,8 +11,8 @@ public class MyException{
             super();
         }
     }
-    static class Exit extends Exception{
-        Exit(){
+    static class NextMap extends Exception{
+        NextMap(){
             super();
         }
     }

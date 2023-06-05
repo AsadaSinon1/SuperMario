@@ -294,6 +294,7 @@ class Mushroom extends Enemy {
             return;
         }
 
+        boolean killMario = false;
         //若存活
         //检查碰撞地图实体
         //修正速度：若左、右、上碰到实体，反弹，速度变为等大方向相反，若下碰到实体，Vy变为0，Vx不变       
@@ -311,14 +312,9 @@ class Mushroom extends Enemy {
                 return;
             }
 
-            //TODO:修改这里
-            //处理马里奥碰撞后的HP，重生等
+            //与马里奥碰撞
             if (checkBounceMario(Edge.LEFT)||checkBounceMario(Edge.LOWER)||checkBounceMario(Edge.RIGHT))
-            {
-                currPlot.mario.HP -= 1;
-                currPlot.mario.respawn(currPlot.info.rsbX, currPlot.info.rsbY);
-            }
-
+                killMario = true;
             if (checkBounce(Edge.LOWER))//下碰撞
             {
                 speedY = 0;
@@ -341,6 +337,8 @@ class Mushroom extends Enemy {
             positionX = positionX + DELTA_T * speedX;
         }
 
+        if (killMario)
+            currPlot.mario.killed();
         //更新step 
         if (walkingTimer >= STEP_TIME)
             step = 1;

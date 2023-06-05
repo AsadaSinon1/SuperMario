@@ -42,10 +42,10 @@ public class Mario{
         canWallJump = info.canWallJump;
     }
 
-
-
-
-
+    void killed(){
+        HP--;
+        death = true;
+    }
     //设计地图函数，可修改
     void initMap(int [][]map){
         this.map = map;
@@ -128,20 +128,20 @@ public class Mario{
         return t;
     }
     //碰撞检测
-    boolean check(double curx,double cury,int num) throws MyException.Exit {
+    boolean check(double curx,double cury,int num) throws MyException.NextMap {
         int px = pixelate(curx)/pixel,py = pixelate(cury)/pixel;
         if(px<0)px = 0;
         for(int i = 0;i<width/pixel;i++)
             for(int j = 0;j<height/pixel;j++){
                 int val = map[px+i][py+j];
                 if(val!=num)continue;
-                if(num==2) throw new MyException.Exit();
+                if(num==2) throw new MyException.NextMap();
                 return true;
             }
         return false;
     }
     //更新每一帧所有状态（尽量不要修改）
-    void update(double dt,long curTime) throws MyException.Death, MyException.NextMap, MyException.Exit {
+    void update(double dt,long curTime) throws MyException.Death, MyException.NextPlot, MyException.NextMap {
         double newx = x+dt*vx,newy = dash?y:y-dt*vy,t = 0;
         //碰撞检测+调节
         if(check(newx,newy,1)){
@@ -155,17 +155,13 @@ public class Mario{
         }
         //通关、死亡检测
         check(x,y,2);
-        if(check(x,y,3)){
-            death = true;
-            HP--;
-            throw new MyException.Death();
-        }
+        if(check(x,y,3)) killed();
+        if(death) throw new MyException.Death();
         //地图边缘检测
         if(x<0)x = 0;
         if(y<0)y = 0;
-        if(x>WIDTH-width){
-            throw new MyException.NextMap();
-        }
+        // 进入下一场景
+        if(x>WIDTH-width) throw new MyException.NextPlot();
         //离地检测
         int px = pixelate(x)/pixel,py = pixelate(y)/pixel;
         boolean flag = false;
@@ -298,8 +294,5 @@ public class Mario{
 
     public double getVy() {
         return vy;
-    }
-    public void setY(double y) {
-        this.y = y;
     }
 }
