@@ -201,7 +201,11 @@ public class Map {
                 if(mario.isJump()&&curTime< mario.getTimeJump() +mario.delay)mario.jumpRight(curTime);
             }
             if (code==KeyEvent.VK_SPACE){
-                if(mario.isDash())return;
+                if(mario.isDash()||mario.isJump())return;
+                if(mario.isStep()){
+                    mario.setJump(true);
+                    return;
+                }
                 if((!mario.isJump()&&!mario.isFall())||(mario.isFall()&&curTime<mario.getTimeOnGround()+mario.delay))mario.setVy(mario.jumpSpeed);
                 if(mario.isRight()&&!mario.isJump())mario.jumpRight(curTime);
                 if(mario.isLeft()&&!mario.isJump())mario.jumpLeft(curTime);
