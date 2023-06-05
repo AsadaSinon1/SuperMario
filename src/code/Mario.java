@@ -19,11 +19,11 @@ public class Mario{
     private double x,y,vx,vy;
     //上一帧跑步状态（1，2，3，4）
     private int lastState;
-    //左方向是否按下、右方向是否按下、是否离地、跳跃键是否按下、是否死亡
-    private boolean left,right,fall,jump,death,faceRight,dashAble,dash;
-    //左侧是否有墙、右侧是否有墙、是否触发左蹬墙跳、是否触发右蹬墙跳
+    //是否按A、是否按D、是否离地、是否按space、是否死亡、是否面朝右、是否能冲刺、是否在冲刺、是否踩头
+    private boolean left,right,fall,jump,death,faceRight,dashAble,dash,step;
+    //左（右）侧是否有墙、是否触发左（右）蹬墙跳
     private boolean wallLeft,wallRight,wallLeftJump,wallRightJump;
-    //上一次粘在左（右）墙的时刻（用来调整蹬墙容错）、上一次跳跃的时刻、上一次在地面的时刻
+    //粘在左（右）墙的时刻、跳跃时刻、在地面时刻、冲刺时刻
     private long timeLeft,timeRight,timeJump,timeOnGround,timeDash;
 
     Mario(Map.MapInfo info){
@@ -61,15 +61,15 @@ public class Mario{
             lastState=1;
             return "SlideRight";
         }
-        if(fall&&jump&&vx>0){
+        if(fall&&(jump||step)&&vx>0){
             lastState=1;
             return "JumpRight";
         }
-        if(fall&&jump&&vx<0){
+        if(fall&&(jump||step)&&vx<0){
             lastState=1;
             return "JumpLeft";
         }
-        if(fall&&jump&&vx==0){
+        if(fall&&(jump||step)&&vx==0){
             lastState=1;
             return faceRight?"JumpRight":"JumpLeft";
         }
@@ -102,7 +102,7 @@ public class Mario{
         vx = vy = 0;
         dashAble = canDash;
         fall = faceRight = true;
-        death = dash = left = right = jump = false;
+        death = dash = left = right = jump = step = false;
         wallLeft = wallRight = false;
         wallLeftJump = wallRightJump = false;
         lastState = 1;
@@ -131,6 +131,7 @@ public class Mario{
     boolean check(double curx,double cury,int num) throws MyException.NextMap {
         int px = pixelate(curx)/pixel,py = pixelate(cury)/pixel;
         if(px<0)px = 0;
+        if(py<0)py = 0;
         for(int i = 0;i<width/pixel;i++)
             for(int j = 0;j<height/pixel;j++){
                 int val = map[px+i][py+j];
@@ -153,6 +154,7 @@ public class Mario{
             x = newx;
             y = newy;
         }
+        if(vy<=0)step = false;
         //通关、死亡检测
         check(x,y,2);
         if(check(x,y,3)) killed();
@@ -189,7 +191,7 @@ public class Mario{
             }
             boolean onWall = (wallLeft&&left)||(wallRight&&right);
             double rate = onWall&&canGrabWall?mu:1.0;
-            if(vy>0)vy-=dt*g*(jump?0.5:3.0)*(onWall?1.5:1.0);
+            if(vy>0)vy-=dt*g*(jump?0.5:(step?1.0:3.0))*(onWall?1.5:1.0);
             else vy-=dt*g*rate;
             if(vy<-jumpSpeed*rate)vy = -jumpSpeed*rate;
         }else{
@@ -212,6 +214,7 @@ public class Mario{
                 }else vx = 0;
             }
         }
+        if(step)System.out.println(Math.random());
     }
 
 
@@ -244,6 +247,12 @@ public class Mario{
     }
     public void setTimeJump(long timeJump) {
         this.timeJump = timeJump;
+    }
+    public boolean isStep(){
+        return this.step;
+    }
+    public void setStep(boolean step){
+        this.step = step;
     }
     public boolean isFall() {
         return fall;
