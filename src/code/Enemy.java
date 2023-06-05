@@ -13,7 +13,6 @@ public class Enemy {
     LifeState lifeState = LifeState.ALIVE;//生命状态
     final double DELTA_T = 0.1;//以0.1ms为单位，更新位置和速度
     final double G = 0.003;//重力加速度
-    final double REBOUND_SPEED = 1.2;//反弹马里奥的速度
     long walkingTimer=0;//走路计时器
     Image[] img;//怪物的所有贴图
     Image defaultImg = Toolkit.getDefaultToolkit().getImage("src/image/totalAlpha.png");//完全透明图像 
@@ -300,15 +299,16 @@ class Mushroom extends Enemy {
         //修正速度：若左、右、上碰到实体，反弹，速度变为等大方向相反，若下碰到实体，Vy变为0，Vx不变       
         for (double t = 0; t < dt; t += DELTA_T)
         {
-            if (checkBounceMario(Edge.UPPER)&&currPlot.mario.getVy()<0)//上碰撞马里奥（有向下速度的），enemy死亡
+            if (checkBounceMario(Edge.UPPER)&&currPlot.mario.getVy()<0&&!currPlot.mario.isDash())//上碰撞马里奥（有向下速度的），enemy死亡
             {
                 try {
                     death();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                currPlot.mario.setStep(true);
                 //Mario应该被反弹起来，不然看着很奇怪
-                currPlot.mario.setVy(REBOUND_SPEED);//注意这里是正的，正速度才是向上跳              
+                currPlot.mario.setVy(currPlot.mario.jumpSpeed);//注意这里是正的，正速度才是向上跳
                 return;
             }
 
