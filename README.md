@@ -17,7 +17,7 @@ TODO: FINISH MARIO CONTROLS
 - Appearance:
   | Mushroom Alive | Mushroom Corpse |
   |----------------------------------------------------------|-------------------------------------------------------------|
-  | <center><img src="src/image/mushroom0.png" alt="Mushroom Alive" width="30"></center> | <center> <img src="src/image/mushroomRemain.png" alt="Mushroom Corpse" width="30"></center> |
+  | <div align="center"><img src="src/image/mushroom0.png" alt="Mushroom Alive" width="30"></div> | <div align="center"><img src="src/image/mushroomRemain.png" alt="Mushroom Corpse" width="30"></div> |
 
 - Behavior: The Mushroom moves at a constant speed horizontally, changing direction when it encounters obstacles or reaches the boundaries.
 
@@ -26,7 +26,7 @@ TODO: FINISH MARIO CONTROLS
 - Appearance:
   | &nbsp; &nbsp; Turtle Alive &nbsp; &nbsp; &nbsp;| &nbsp;&nbsp; &nbsp;Turtle Corpse &nbsp; &nbsp; |
   |----------------------------------------------------------|-------------------------------------------------------------|
-  | <center> <img src="src/image/turtleLeft0.png" alt="Turtle Alive" width="30" height="50"></center> | <center><img src="src/image/turtleRemain.png" alt="Turtle Corpse" width="30" height="50"></center> |
+  | <div align="center"> <img src="src/image/turtleLeft0.png" alt="Turtle Alive" width="30" height="50"></div> | <div align="center"><img src="src/image/turtleRemain.png" alt="Turtle Corpse" width="30" height="50"></div> |
 - Behavior: The Turtle moves quickly when running to the left, but moves slowly when running to the right.
 
 The only way to defeat the monsters is by jumping on top of them. Be cautious and time your jumps correctly to ensure Mario's safety!
