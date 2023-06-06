@@ -6,25 +6,24 @@ This is the final project of the "Java Programming" course at Peking University.
 
 In this section, we introduce the project roles and contributions of our team members.
 
-**_Zhiyue Feng_** (FZYsheep) \
-Design and implement the start screen and level selection interface. \
-Use a database to create a leaderboard for scores. \
-Prepare PowerPoint presentation and project video.
+**_Jiakai Mao_** (AsadaSinon1) \
+Merge and modify part of other contributors' code. \
+Responsible for Design well-balanced levels. \
+Responsible for realizing the game background and level internal interface.
 
 **_Dongyi Li_** (rcvjqigp-2) \
-Responsible for the in-game UI elements. \
 Handle Mario's movement,health reduction, level switching, and other related functionalities. \
-Handle collisions, scoring, and other events.
+Design and debug mario's motion-related values.
 
-**_Jiakai Mao_** (AsadaSinon1) \
-Responsible for Design well-balanced levels. \
-Handle enemy movement, death, and related behaviors. \
-Find and create various artistic textures and graphics.
+**_Zhiyue Feng_** (FZYsheep) \
+Design and implement the start screen, login interface and level selection interface. \
+Use a database to manage users' data. \
 
 **_Yutong Yang_** (Selina233) \
-Responsible for Design well-balanced levels. \
 Adjust Mario's attributes and values. \
-Find and create various artistic textures and graphics.
+Find and create various artistic textures and graphics. \
+Perpare PowerPoint presentation and create a demo video. \
+Handle enemy movement, death, and related behaviors. \
 
 We have achieved a fair distribution of work, and each member has contributed to this project.
 
