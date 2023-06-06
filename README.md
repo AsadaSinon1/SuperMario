@@ -17,13 +17,13 @@ Design and debug mario's motion-related values.
 
 **_Zhiyue Feng_** (FZYsheep) \
 Design and implement the start screen, login interface and level selection interface. \
-Use a database to manage users' data. \
+Use a database to manage users' data.
 
 **_Yutong Yang_** (Selina233) \
 Adjust Mario's attributes and values. \
 Find and create various artistic textures and graphics. \
 Perpare PowerPoint presentation and create a demo video. \
-Handle enemy movement, death, and related behaviors. \
+Handle enemy movement, death, and related behaviors.
 
 We have achieved a fair distribution of work, and each member has contributed to this project.
 
