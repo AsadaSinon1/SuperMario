@@ -15,10 +15,11 @@ public class Game extends JFrame{
         currMap = new Map(mapId, this);
         SwingUtilities.invokeLater(new Backstage(currMap));
     }
-    public void nextGame() {
+    public void nextGame(boolean back) {
         // TODO:save操作
-        // 加载地图
-        FileOperation.copyFile("src/map/level"+(currMap.mapId+1),this.user+"/level"+(currMap.mapId+1));
+        if(!back)
+            // 加载地图
+            FileOperation.copyFile("src/map/level"+(currMap.mapId+1),this.user+"/level"+(currMap.mapId+1));
         // 进入选关界面
         LevelChosenPanel nextGame = new LevelChosenPanel(user);
         setContentPane(nextGame);

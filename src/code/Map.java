@@ -81,6 +81,8 @@ public class Map {
     class Plot extends JPanel implements KeyListener {
         final String filename;
         public PlotInfo info;
+        // 退出界面信号
+        boolean backFlag = false;
         Mario mario;
         // 敌人列表
         ArrayList<Enemy> enemyList = new ArrayList<>();
@@ -189,6 +191,10 @@ public class Map {
         public void keyPressed(KeyEvent e) {
             if(mario.isDeath())return;
             int code = e.getKeyCode();
+            // 按Esc退出
+            if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+                backFlag = true;
+
             long curTime = System.currentTimeMillis();
             if (code==KeyEvent.VK_A){
                 mario.setLeft(true);

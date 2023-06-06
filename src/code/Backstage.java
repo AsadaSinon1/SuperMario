@@ -85,45 +85,55 @@ public class Backstage extends JFrame implements Runnable, ActionListener {
         // 刷新起始时间
         long curTime = System.currentTimeMillis();
 
+
         //更新Enemy状态
-        for(Enemy enemy:currPlot.enemyList)
+        for (Enemy enemy : currPlot.enemyList)
             enemy.update(curTime - prevTime, curTime);
-        
+
         //更新Mario状态
         try {
             mario.update(curTime - prevTime, curTime);
         } catch (MyException.Death e) {
-            if(mario.HP > 0)
-                mario.respawn(currPlot.info.rsbX,currPlot.info.rsbY);
-            else{
+            if (mario.HP > 0)
+                mario.respawn(currPlot.info.rsbX, currPlot.info.rsbY);
+            else {
                 plotId = 1;
                 changePlot();
-                mario.HP=currMap.info.upperHP;
+                mario.HP = currMap.info.upperHP;
                 mario.respawn(currPlot.info.rsbX, currPlot.info.rsbY);
             }
         } catch (MyException.NextMap e) {
-            changeMap();
+            changeMap(false);
         } catch (MyException.NextPlot e) {
             plotId++;
             changePlot();
             mario.respawn(0, mario.getY());
         }
 
-
         // 刷新JPanel
-        if(interval==0) currPlot.paintImmediately(0,0, Map.Plot.PlotInfo.screenWidth, Map.Plot.PlotInfo.screenHeight);
-        interval = (interval+1)%2;
+        if (interval == 0)
+            currPlot.paintImmediately(0, 0, Map.Plot.PlotInfo.screenWidth, Map.Plot.PlotInfo.screenHeight);
+        interval = (interval + 1) % 2;
         prevTime = curTime;
+
+        if(currPlot.backFlag)
+        {
+            int option = JOptionPane.showConfirmDialog(this, "确定要退出吗？", "退出提示", JOptionPane.YES_NO_OPTION);
+            if(option == JOptionPane.YES_OPTION)
+                changeMap(true);
+            currPlot.backFlag = false;
+            prevTime = System.currentTimeMillis();
+        }
 
     }
     // 进入选关界面
-    public void changeMap() {
+    public void changeMap(boolean back) {
         thread.interrupt();
         timer.stop();
         //TODO: SQL操作
 
         // 退出
         dispose();
-        currMap.controller.nextGame();
+        currMap.controller.nextGame(back);
     }
 }
