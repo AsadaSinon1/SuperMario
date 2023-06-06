@@ -8,7 +8,25 @@ Welcome to the Super Mario Game! This guide will provide you with instructions o
 
 ## Game Controls
 
-TODO: FINISH MARIO CONTROLS
+Move: Press "A" to move left, "D" to move right.
+
+Jump: Press "SPACE" to jump, and the longer you press it, the higher Mario jumps.
+
+Sliding on the wall: When Mario is attached to the wall (taking the left side as an example), holding key "A" can slide down the wall at a lower speed.
+
+Jumping on the wall: When Mario is attached to the wall (taking the left side as an example), press "D" and "SPACE" at the same time to achieve jumping on the wall to the upper right side.
+
+Dash: Press key "L", Mario will dash forward in the direction he is facing, and the dash process will not be affected by gravity. Note that Mario can only dash once in the air and it can only be restored when landing on the ground.
+
+Exit game: ESC key
+
+## TIPS
+
+1. Mario has a total of 3 lives, with one life deducted for each death (falling into a trap or hitting an enemy) and reborn in the current plot. If all 3 lives are lost, Mario will reborn in the first plot of the level.
+
+2. For enemies, falling on top of their head can kill them and get scores, but touching them in other directions will cause Mario to die.
+
+3. For double-side walls, alternately press "A+SPACE" and "D+SPACE" to make Mario jump on the wall continuously. It is relatively difficult to climb up a single-side wall, but it CAN be achieved through our testing. We hope you can discover this skill.
 
 ## Monster Encyclopedia
 
