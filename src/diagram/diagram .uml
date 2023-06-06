@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="-3176.131901840491" y="10.705521472392633">src.code.Mario</node>
+    <node x="-3213.631901840491" y="226.07975460122702">src.code.Enemy</node>
+    <node x="-3165.39263803681" y="554.6441717791411">src.code.Edge</node>
+    <node x="-2978.6472392638034" y="343.3006134969326">src.code.Mushroom</node>
+    <node x="-781.5" y="176.0">src.code.FileOperation</node>
+    <node x="-889.0" y="476.0">src.code.LevelChosenPanel</node>
+    <node x="-1135.0" y="-24.0">src.code.LoginFrame</node>
+    <node x="-778.5" y="276.0">src.code.passwordBtn</node>
+    <node x="-961.5" y="76.0">src.code.Backstage</node>
+    <node x="-970.5" y="276.0">src.code.MessageFrame</node>
+    <node x="-1140.0" y="76.0">src.code.Map</node>
+    <node x="-3175.89263803681" y="441.4539877300614">src.code.LifeState</node>
+    <node x="-2964.1472392638034" y="151.03987730061357">src.code.Turtle</node>
+    <node x="-952.0" y="376.0">src.code.GameStartFrame</node>
+    <node x="-1151.0" y="376.0">src.code.GameEnterPanel</node>
+    <node x="-964.0" y="176.0">src.code.Game</node>
+    <node x="-1147.0" y="276.0">src.code.SQLConnection</node>
+    <node x="-1139.0" y="176.0">src.code.MyException</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="src.code.Turtle" target="src.code.Enemy" relationship="GENERALIZATION">
+      <point x="41.5" y="-27.0" />
+      <point x="-2814.6472392638034" y="178.0398773006135" />
+      <point x="-3103.631901840491" y="178.0398773006135" />
+      <point x="-3103.631901840491" y="229.42944785276077" />
+      <point x="-3206.131901840491" y="229.42944785276077" />
+      <point x="-102.5" y="27.0" />
+    </edge>
+    <edge source="src.code.Mushroom" target="src.code.Enemy" relationship="GENERALIZATION">
+      <point x="0.0" y="-27.0" />
+      <point x="-2856.1472392638034" y="370.3006134969326" />
+      <point x="-3103.631901840491" y="370.3006134969326" />
+      <point x="0.0" y="27.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.444141689373297" showDependencies="false" x="-1573.0" y="333.0" />
+  <SelectedNodes>
+    <node>src.code.Map</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Constructors</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
