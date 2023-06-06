@@ -93,6 +93,10 @@ In this section, we introduce the important updates.
 
 **_It's a significant milestone that the game prototype has taken shape and is playable even without enemies._**
 
+### June 5th
+
+- We have completed the collision mechanism between Mario and the Enemy.
+
 ### June 6th
 
 - We have updated the subclass Turtle of the Enemy class.
