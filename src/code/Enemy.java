@@ -19,7 +19,7 @@ public class Enemy {
     /**
      * @param x x坐标
      * @param y y坐标
-     * @param curr 所在场景
+     * @param curr 所在场景标号
      */
     Enemy(double x, double y, Map.Plot curr)
     {
@@ -27,7 +27,6 @@ public class Enemy {
         positionY = y;
         currPlot = curr;
     }
-   
     public double getPositionX() {
         return positionX;
     }
@@ -84,9 +83,10 @@ public class Enemy {
     }
     
     /**
-     * 是不是实体(墙、水管等是实体、金币;其他怪物不算实体、mario也不算，单独处理)
-     * 注意这里的pixel x是实际坐标/pixel
-     * @return 
+     * @param pixelx 转化为pixel后的x坐标（即positionX/pixel）
+     * @param pixely 转化为pixel后的y坐标
+     * @return 该坐标是不是实体(墙、水管等是实体;其他怪物、马里奥不算实体)
+     * @throws Exception
      */
     boolean isEntity(int pixelx,int pixely) throws Exception
     {
@@ -98,6 +98,12 @@ public class Enemy {
             return false;
         throw new Exception("isEntity:未知地图块类型" + type);
     }
+    
+    /**
+     * @param pixelx 转化为pixel后的x坐标（即positionX/pixel）
+     * @param pixely 转化为pixel后的y坐标
+     * @return 马里奥当前位置是不是覆盖该坐标
+     */
     boolean isMario(int pixelx,int pixely)
     {
         int xStart = Mario.pixelate(currPlot.mario.getX()) / Mario.pixel;
@@ -109,8 +115,8 @@ public class Enemy {
 
     
     /**
-     * 检测碰撞
-     * @param edge 哪个边缘
+     * @param edge 检测哪个边缘
+     * @return 是否碰撞地图实体、地图边界
      */
     boolean checkBounce(Edge edge)
     {
@@ -125,7 +131,7 @@ public class Enemy {
         switch (edge)//尽量不要改这里的代码
         {
             case UPPER:
-                if (pixelY == 0)
+                if (pixelY == 0)//触碰地图边界
                     return true;
                 pixelXEnd = pixelX + pixelW;
                 pixelYEnd = pixelY;
@@ -175,10 +181,13 @@ public class Enemy {
         return false;
     }
 
+    /**
+     * @param edge 检测哪个边缘
+     * @return 是否碰撞马里奥
+     */
     boolean checkBounceMario(Edge edge)
     {
         positionCorrection();
-
         int pixelX = Mario.pixelate(positionX) / Mario.pixel;//借用一下算像素的函数
         int pixelY = Mario.pixelate(positionY) / Mario.pixel;
         int pixelH = height / Mario.pixel;
@@ -253,8 +262,8 @@ class Mushroom extends Enemy {
     final int MUSHROOM_VALUE = 1000;//蘑菇的价值分数
     final int REMAIN_TIME = 2000;//蘑菇的尸体保留时间
     final int STEP_TIME = 500;//走一步需要的时间，即贴图切换时间
-    final int MUSHROOM_HEIGHT = 30;
-    final int MUSHROOM_WIDTH = 30;
+    final int MUSHROOM_HEIGHT = 30;//蘑菇的高度
+    final int MUSHROOM_WIDTH = 30;//蘑菇的宽度
     
     Mushroom(double x, double y, Map.Plot curr)
     {
@@ -350,14 +359,14 @@ class Mushroom extends Enemy {
 }
 
 class Turtle extends Enemy {
-    int step;//当前运动状态对应的贴图，0 or 1
+    int step;//当前运动状态对应的贴图顺序，0 or 1
     final double TURTLE_RIGHT_SPEED = 0.15;//乌龟向右走路速度
     final double TURTLE_LEFT_SPEED = -0.35;//乌龟向左走路速度
-    final int TURTLE_VALUE = 2000;//蘑菇的价值分数
-    final int REMAIN_TIME = 3000;//蘑菇的尸体保留时间
+    final int TURTLE_VALUE = 2000;//乌龟的价值分数
+    final int REMAIN_TIME = 3000;//乌龟的尸体保留时间
     final int STEP_TIME = 500;//走一步需要的时间，即贴图切换时间
-    final int TURTLE_HEIGHT = 50;
-    final int TURTLE_WIDTH = 30;
+    final int TURTLE_HEIGHT = 50;//乌龟的高度
+    final int TURTLE_WIDTH = 30;//乌龟的宽度
     
     Turtle(double x, double y, Map.Plot curr)
     {
