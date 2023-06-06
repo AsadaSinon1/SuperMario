@@ -69,4 +69,4 @@ In this section, we introduce the important updates.
 - We have updated the subclass Turtle of the Enemy class.
 - We have added pause functionality for BackStage class.
 - We have created presentation slides for demonstration purposes.
-- We have successfully completed the classroom presentation.
+- We have successfully completed the class presentation.
