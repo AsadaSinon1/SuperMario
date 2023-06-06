@@ -63,3 +63,10 @@ In this section, we introduce the important updates.
 - We have introduced a password mechanism that requires SQL database support.
   
 ***It's a significant milestone that the game prototype has taken shape and is playable even without enemies.***
+
+### June 6th
+
+- We have updated the subclass Turtle of the Enemy class.
+- We have added pause functionality for BackStage class.
+- We have created presentation slides for demonstration purposes.
+- We have successfully completed the classroom presentation.
