@@ -2,6 +2,35 @@
 
 This is the final project of the "Java Programming" course at Peking University. Our team name is "So What Should We Call Ourselves?"
 
+# User Guide
+
+Welcome to the Super Mario Game! This guide will provide you with instructions on how to control Mario, the game character, and introduce you to the Monster Encyclopedia.
+
+## Game Controls
+
+TODO: FINISH MARIO CONTROLS
+
+## Monster Encyclopedia
+
+### Mushroom
+
+- Appearance:
+  | Mushroom Alive | Mushroom Corpse |
+  |----------------------------------------------------------|-------------------------------------------------------------|
+  | <center><img src="src/image/mushroom0.png" alt="Mushroom Alive" width="30"></center> | <center> <img src="src/image/mushroomRemain.png" alt="Mushroom Corpse" width="30"></center> |
+
+- Behavior: The Mushroom moves at a constant speed horizontally, changing direction when it encounters obstacles or reaches the boundaries.
+
+### Turtle
+
+- Appearance:
+  | &nbsp; &nbsp; Turtle Alive &nbsp; &nbsp; &nbsp;| &nbsp;&nbsp; &nbsp;Turtle Corpse &nbsp; &nbsp; |
+  |----------------------------------------------------------|-------------------------------------------------------------|
+  | <center> <img src="src/image/turtleLeft0.png" alt="Turtle Alive" width="30" height="50"></center> | <center><img src="src/image/turtleRemain.png" alt="Turtle Corpse" width="30" height="50"></center> |
+- Behavior: The Turtle moves quickly when running to the left, but moves slowly when running to the right.
+
+The only way to defeat the monsters is by jumping on top of them. Be cautious and time your jumps correctly to ensure Mario's safety!
+
 # Project Roles
 
 In this section, we introduce the project roles and contributions of our team members.
@@ -61,8 +90,8 @@ In this section, we introduce the important updates.
 - We have addressed several bugs to make the gameplay smoother.
 - We have separated abilities such as sprinting, wall jumps, and wall grabs, making Mario's abilities controllable.
 - We have introduced a password mechanism that requires SQL database support.
-  
-***It's a significant milestone that the game prototype has taken shape and is playable even without enemies.***
+
+**_It's a significant milestone that the game prototype has taken shape and is playable even without enemies._**
 
 ### June 6th
 
