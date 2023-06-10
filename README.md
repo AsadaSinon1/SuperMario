@@ -54,8 +54,11 @@ The only way to defeat the monsters is by jumping on top of them. Be cautious an
 
 The way of configuring mysql database using IntelliJ IDEA as the development tool(Windows):
 
-- Install mysql database on your own computer.[Download here.](https://www.mysql.com/downloads/)Then add the mysql installation path to the environment variables.
-  | 
+- Install mysql database on your own computer.[Download here.](https://www.mysql.com/downloads/)Then add the mysql installation path to the environment variables.[You can find a detailed guidance here.](https://dev.mysql.com/doc/refman/8.0/en/windows-installation.html)
+
+- Install jdbc Driver on this project in IntelliJ IDEA.[Download here.](https://dev.mysql.com/downloads/connector/j/)Decompress the downloaded package,then you can find a  .jar file in the folder named `src`.This is the file we are going to use.Then open this supermario project in IntelliJ IDEA and open `File` -> `Project Structure`.Click `Libraries` on the left and add the .jar file to project's libraries.
+
+- Finally,you can change the file named `src/code/SQLConnection.java` to use your own database through your own mysql user name and password. 
 
 # Project Roles
 
