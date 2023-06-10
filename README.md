@@ -37,7 +37,7 @@ Exit game: ESC key
   |----------------------------------------------------------|-------------------------------------------------------------|
   | <div align="center"><img src="src/image/mushroom0.png" alt="Mushroom Alive" width="30"></div> | <div align="center"><img src="src/image/mushroomRemain.png" alt="Mushroom Corpse" width="30"></div> |
 
-- Behavior: The Mushroom moves at a constant speed horizontally, changing direction when it encounters obstacles or reaches the boundaries.
+- Behavior: The Mushroom moves at a constant speed horizontally, changing direction when it encounters obstacles or reaches the bounda ries.
 
 ### Turtle
 
@@ -49,6 +49,13 @@ Exit game: ESC key
 - Behavior: The Turtle moves quickly when running to the left, but moves slowly when running to the right.
 
 The only way to defeat the monsters is by jumping on top of them. Be cautious and time your jumps correctly to ensure Mario's safety!
+
+## MySQL Configuration
+
+The way of configuring mysql database using IntelliJ IDEA as the development tool(Windows):
+
+- Install mysql database on your own computer.[Download here.](https://www.mysql.com/downloads/)Then add the mysql installation path to the environment variables.
+  | 
 
 # Project Roles
 
